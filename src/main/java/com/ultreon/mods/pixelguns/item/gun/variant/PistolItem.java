@@ -10,7 +10,7 @@ public class PistolItem extends GunItem {
     public PistolItem() {
         super(
             false,
-            4.0f,
+            5.0f,
             128,
             4,
             12,
