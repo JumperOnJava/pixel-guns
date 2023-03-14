@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.item.gun;
 
 import com.ultreon.mods.pixelguns.event.GunFireEvent;
 import com.ultreon.mods.pixelguns.event.forge.Event;
+import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
 import com.ultreon.mods.pixelguns.registry.KeybindRegistry;
 import com.ultreon.mods.pixelguns.util.ResourcePath;
@@ -10,6 +11,7 @@ import com.ultreon.mods.pixelguns.util.InventoryUtil;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -140,7 +142,10 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         }
 
         if (cooldownManager.isCoolingDown(stack.getItem())) {
-            nbtCompound.putFloat("cooldown_tick", cooldownManager.getCooldownProgress(stack.getItem(), 0));
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeItemStack(stack);
+            buf.writeFloat(cooldownManager.getCooldownProgress(stack.getItem(), 0));
+            ClientPlayNetworking.send(PacketRegistry.GUN_COOLDOWN_2_S, buf);
         }
     }
 
