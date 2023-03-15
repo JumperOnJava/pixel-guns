@@ -17,7 +17,7 @@ public class SubmachineGunItem extends GunItem {
             ItemRegistry.LIGHT_BULLETS,
             44,
             0.0f,
-            10.0f,
+            7.5f,
             1,
             LoadingType.CLIP,
             SoundRegistry.SUBMACHINE_GUN_RELOAD,
