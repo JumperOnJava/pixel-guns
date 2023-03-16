@@ -72,8 +72,6 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         ServerWorld world = serverPlayer.getWorld();
 
-        this.triggerAnim(player, GeoItem.getOrAssignId(stack, world), "controller", "fire");
-
         player.getItemCooldownManager().set(this, this.fireCooldown);
 
         // Spawn Rocket
@@ -88,6 +86,7 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
         if (!player.getAbilities().creativeMode) {
             this.useAmmo(stack);
+            this.triggerAnim(player, GeoItem.getOrAssignId(stack, world), "controller", "fire");
         }
 
         this.playFireAudio(world, player);
