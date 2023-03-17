@@ -5,6 +5,7 @@ import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,6 +16,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -47,15 +49,21 @@ public class GrenadeEntity extends ThrownItemEntity implements GeoEntity {
     }
 
     private void explode() {
-        if (this.world.isClient) return;
+        if (world.isClient) return;
 
-        this.world.createExplosion(this, null, new ExplosionBehavior() {
+        Explosion explosion = world.createExplosion(this, null, new ExplosionBehavior() {
             @Override
             public Optional<Float> getBlastResistance(Explosion explosion, BlockView world, BlockPos pos, BlockState blockState, FluidState fluidState) {
                 return Optional.of(0.0f);
             }
-        }, this.getX(), this.getY(), this.getZ(), 1.0f, false, World.ExplosionSourceType.MOB);
-        this.discard();
+        }, getX(), getY(), getZ(), 1.0f, false, World.ExplosionSourceType.MOB);
+
+        Box box = new Box(getBlockPos()).expand(6);
+        for (Entity entity : world.getNonSpectatingEntities(Entity.class, box)) {
+            entity.damage(DamageSource.explosion(explosion), 10);
+        }
+
+        discard();
     }
 
     @Override

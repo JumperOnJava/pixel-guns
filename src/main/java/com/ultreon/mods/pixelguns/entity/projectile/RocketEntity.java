@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.entity.projectile;
 
 import com.ultreon.mods.pixelguns.registry.EntityRegistry;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -9,11 +10,15 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
 
 public class RocketEntity extends ThrownItemEntity implements GeoEntity {
 
@@ -32,10 +37,16 @@ public class RocketEntity extends ThrownItemEntity implements GeoEntity {
 	}
 
 	private void explode() {
-		if (this.world.isClient) return;
+		if (world.isClient) return;
 
-		this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0f, false, World.ExplosionSourceType.MOB);
-		this.discard();
+		Explosion explosion = world.createExplosion(this, getX(), getY(), getZ(), 2.0f, false, World.ExplosionSourceType.MOB);
+
+		Box box = new Box(getBlockPos()).expand(6);
+		for (Entity entity : world.getNonSpectatingEntities(Entity.class, box)) {
+			entity.damage(DamageSource.explosion(explosion), 50);
+		}
+
+		discard();
 	}
 
 	@Override
