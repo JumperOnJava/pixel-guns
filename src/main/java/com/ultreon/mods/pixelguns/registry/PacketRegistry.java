@@ -1,6 +1,7 @@
 package com.ultreon.mods.pixelguns.registry;
 
 import com.ultreon.mods.pixelguns.network.packet.c2s.play.*;
+import com.ultreon.mods.pixelguns.network.packet.s2c.play.GrenadeExplodeS2CPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GunCooldownS2CPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GunRecoilS2CPacket;
 import com.ultreon.mods.pixelguns.util.ResourcePath;
@@ -17,11 +18,13 @@ public class PacketRegistry {
     public static final Identifier WORKSHOP_ASSEMBLE = ResourcePath.get("assemble");
     public static final Identifier GUN_COOLDOWN_2_S = ResourcePath.get("cooldown_2_s");
     public static final Identifier GUN_COOLDOWN_2_C = ResourcePath.get("cooldown_2_c");
+    public static final Identifier GRENADE_EXPLODE = ResourcePath.get("grenade_explode");
 
     public static class CLIENT {
         public static void registerPackets() {
             PacketRegistry.CLIENT.registerPacket(GUN_RECOIL, new GunRecoilS2CPacket());
             PacketRegistry.CLIENT.registerPacket(GUN_COOLDOWN_2_C, new GunCooldownS2CPacket());
+            PacketRegistry.CLIENT.registerPacket(GRENADE_EXPLODE, new GrenadeExplodeS2CPacket());
         }
 
         private static void registerPacket(Identifier id, ClientPlayNetworking.PlayChannelHandler packetHandler) {

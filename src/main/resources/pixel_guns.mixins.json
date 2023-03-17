@@ -4,6 +4,7 @@
   "package": "com.ultreon.mods.pixelguns.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "common.ExplosionMixin",
     "common.LivingEntityMixin",
     "common.PlayerInventoryMixin"
   ],
