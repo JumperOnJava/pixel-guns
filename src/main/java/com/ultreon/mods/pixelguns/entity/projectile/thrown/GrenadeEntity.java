@@ -2,20 +2,32 @@ package com.ultreon.mods.pixelguns.entity.projectile.thrown;
 
 import com.ultreon.mods.pixelguns.registry.EntityRegistry;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
+import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
 
+import com.ultreon.mods.pixelguns.util.GrenadeExplosion;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 import net.minecraft.world.explosion.Explosion;
@@ -47,32 +59,43 @@ public class GrenadeEntity extends ThrownItemEntity implements GeoEntity {
     }
 
     private void explode() {
-        if (this.world.isClient) return;
+        if (world.isClient) return;
 
-        this.world.createExplosion(this, null, new ExplosionBehavior() {
+        Explosion explosion = new Explosion(world, this, null, new ExplosionBehavior() {
             @Override
             public Optional<Float> getBlastResistance(Explosion explosion, BlockView world, BlockPos pos, BlockState blockState, FluidState fluidState) {
                 return Optional.of(0.0f);
             }
-        }, this.getX(), this.getY(), this.getZ(), 1.0f, false, World.ExplosionSourceType.MOB);
-        this.discard();
+        }, getX(), getY(), getZ(), 1.0f, false, world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) ? world.getDestructionType(GameRules.MOB_EXPLOSION_DROP_DECAY) : Explosion.DestructionType.KEEP);
+        ((GrenadeExplosion) explosion).cancelSound();
+        explosion.collectBlocksAndDamageEntities();
+        explosion.affectWorld(true);
+
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeBlockPos(getBlockPos());
+
+        for (ServerPlayerEntity player : PlayerLookup.tracking(this)) {
+            ServerPlayNetworking.send(player, PacketRegistry.GRENADE_EXPLODE, buf);
+        }
+
+        Box box = new Box(getBlockPos()).expand(6);
+        for (Entity entity : world.getNonSpectatingEntities(Entity.class, box)) {
+            entity.damage(DamageSource.explosion(explosion), 10);
+        }
+
+        discard();
     }
 
     @Override
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
         explode();
-        world.playSound(hitResult.getPos().x, hitResult.getPos().y, hitResult.getPos().z, SoundRegistry.GRENADE_EXPLODE, SoundCategory.MASTER, 0.8f, 0.8f, false);
     }
-
-    
 
     @Override
     protected Item getDefaultItem() {
         return ItemRegistry.GRENADE;
     }
-
-
 
     /*
      * Animation Side

@@ -1,5 +1,6 @@
 package com.ultreon.mods.pixelguns.registry;
 
+import com.ultreon.mods.pixelguns.PixelGunsClient;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.util.ResourcePath;
 import net.minecraft.client.MinecraftClient;
@@ -20,12 +21,16 @@ public class ModelPredicateRegistry {
 
         ModelPredicateProviderRegistry.register(ItemRegistry.ROCKET_LAUNCHER, ResourcePath.get("aiming"), (stack, world, entity, seed) -> entity != null && MinecraftClient.getInstance().options.useKey.isPressed() && GunItem.isLoaded(stack) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ItemRegistry.POLICE_SHIELD, new Identifier("blocking"), (stack, world, entity, seed) ->
-            entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1 : 0);
+                entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1 : 0);
     }
 
     private static void registerGunPredicate(Item gun) {
-        ModelPredicateProviderRegistry.register(gun, ResourcePath.get("cooldown_tick"), (stack, world, entity, seed) ->
-                stack.getOrCreateNbt().getFloat("cooldown_tick"));
+        ModelPredicateProviderRegistry.register(gun, ResourcePath.get("cooldown_tick"), (stack, world, entity, seed) -> {
+            if (PixelGunsClient.TRACKED_GUN_COOLDOWNS.containsKey(stack.getItem())) {
+                return PixelGunsClient.TRACKED_GUN_COOLDOWNS.get(stack.getItem());
+            }
+            return 0;
+        });
 
         ModelPredicateProviderRegistry.register(gun, ResourcePath.get("load_tick"), (stack, world, entity, seed) -> {
             if (entity == null) {

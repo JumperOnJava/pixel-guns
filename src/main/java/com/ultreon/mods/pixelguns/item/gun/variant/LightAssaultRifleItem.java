@@ -26,7 +26,8 @@ public class LightAssaultRifleItem extends GunItem {
             false,
             new int[] {6, 18, 37},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 28)
+                new ItemStack(Items.IRON_INGOT, 38),
+                new ItemStack(Items.IRON_NUGGET, 12)
             }
         );
     }

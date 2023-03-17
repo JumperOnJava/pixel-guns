@@ -4,20 +4,23 @@
   "package": "com.ultreon.mods.pixelguns.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "common.ExplosionMixin",
+    "common.LivingEntityMixin",
+    "common.PlayerInventoryMixin"
   ],
   "client": [
     "client.ClientPlayerInteractionMixin",
     "client.CustomSwordSounds",
-    "client.gun.ads.AdsSensitivityPersistency",
-    "client.gun.ads.AdsSensitivityModifier",
-    "client.gun.ads.AdsSensitivityOption",
-    "client.gun.ads.AdsZoom",
+    "client.GameRendererMixin",
     "client.gun.AmmoHud",
     "client.gun.AnimationPrevention",
     "client.gun.GunKeybinds",
     "client.gun.PlayerGunPose",
     "client.gun.ScopedCrosshairRemover",
-    "client.GameRendererMixin"
+    "client.gun.ads.AdsSensitivityModifier",
+    "client.gun.ads.AdsSensitivityOption",
+    "client.gun.ads.AdsSensitivityPersistency",
+    "client.gun.ads.AdsZoom"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -17,7 +17,7 @@ public class SubmachineGunItem extends GunItem {
             ItemRegistry.LIGHT_BULLETS,
             44,
             0.0f,
-            10.0f,
+            7.5f,
             1,
             LoadingType.CLIP,
             SoundRegistry.SUBMACHINE_GUN_RELOAD,
@@ -26,7 +26,8 @@ public class SubmachineGunItem extends GunItem {
             false,
             new int[] {5, 17, 30},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 22)
+                new ItemStack(Items.IRON_INGOT, 40),
+                new ItemStack(Items.IRON_NUGGET, 10)
             }
         );
     }
