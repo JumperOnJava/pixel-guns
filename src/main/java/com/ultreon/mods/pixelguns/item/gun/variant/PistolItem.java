@@ -26,7 +26,8 @@ public class PistolItem extends GunItem {
             false,
             new int[] {6, 16, 20},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 14)
+                new ItemStack(Items.IRON_INGOT, 25),
+                new ItemStack(Items.IRON_NUGGET, 15)
             }
         );
     }

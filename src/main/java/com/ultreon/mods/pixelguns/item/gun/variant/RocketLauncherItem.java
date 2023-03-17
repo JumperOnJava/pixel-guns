@@ -7,7 +7,6 @@ import com.ultreon.mods.pixelguns.event.forge.Event;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
-
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,7 +15,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
-
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.RenderProvider;
@@ -52,7 +50,8 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
             false,
             new int[] {1, 8, 17},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 32)
+                new ItemStack(Items.IRON_INGOT, 55),
+                new ItemStack(Items.IRON_INGOT, 10)
             }
         );
 

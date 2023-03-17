@@ -26,7 +26,8 @@ public class CombatShotgunItem extends GunItem {
             false,
             new int[] {1, 4, 13},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 24)
+                new ItemStack(Items.IRON_INGOT, 30),
+                new ItemStack(Items.IRON_NUGGET, 15)
             }
         );
     }

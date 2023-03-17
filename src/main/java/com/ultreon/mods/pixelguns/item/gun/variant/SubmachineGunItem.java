@@ -26,7 +26,8 @@ public class SubmachineGunItem extends GunItem {
             false,
             new int[] {5, 17, 30},
             new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 22)
+                new ItemStack(Items.IRON_INGOT, 40),
+                new ItemStack(Items.IRON_NUGGET, 10)
             }
         );
     }
