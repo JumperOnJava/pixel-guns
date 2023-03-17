@@ -51,7 +51,7 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
             new int[] {1, 8, 17},
             new ItemStack[] {
                 new ItemStack(Items.IRON_INGOT, 55),
-                new ItemStack(Items.IRON_INGOT, 10)
+                new ItemStack(Items.IRON_NUGGET, 10)
             }
         );
 
