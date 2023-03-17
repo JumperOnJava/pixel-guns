@@ -30,8 +30,10 @@ public class BlockRegistry {
 
     @Environment(value = EnvType.CLIENT)
     public static class RENDERER {
+
         public static void registerBlockRenderers() {
             RENDERER.registerBlockRenderer(BlockRegistry.WORKSHOP, RenderLayer.getCutout());
+            RENDERER.registerBlockRenderer(BlockRegistry.BOTTLE, RenderLayer.getTranslucent());
         }
 
         private static void registerBlockRenderer(Block block, RenderLayer renderLayer) {
