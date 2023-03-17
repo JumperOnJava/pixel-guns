@@ -1,9 +1,7 @@
 package com.ultreon.mods.pixelguns.registry;
 
 import com.ultreon.mods.pixelguns.util.ResourcePath;
-
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -52,6 +50,7 @@ public class ItemGroupRegistry {
             entries.add(ItemRegistry.LONG_SCOPE);
 
             entries.add(ItemRegistry.WORKSHOP);
+            entries.add(ItemRegistry.BOTTLE);
 
             entries.add(ItemRegistry.GAS_MASK);
             entries.add(ItemRegistry.ARMORED_VEST);

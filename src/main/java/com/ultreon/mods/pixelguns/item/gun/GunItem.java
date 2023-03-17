@@ -1,5 +1,6 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
+import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.event.GunFireEvent;
 import com.ultreon.mods.pixelguns.event.forge.Event;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
@@ -34,6 +35,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -188,12 +190,18 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     protected void handleHit(HitResult result, ServerWorld world, ServerPlayerEntity damageSource) {
         if (result instanceof EntityHitResult entityHitResult) {
             entityHitResult.getEntity().damage(DamageSource.player(damageSource), this.damage);
+        }
+        else if (result instanceof BlockHitResult blockHitResult) {
+            BlockPos pos = blockHitResult.getBlockPos();
 
-//            PixelGuns.LOGGER.info(damageSource.distanceTo(entityHitResult.getEntity()) + " " + damage + " " + entityHitResult.getEntity().getType().getUntranslatedName());
-        } else if (result instanceof BlockHitResult blockHitResult) {
             if (blockHitResult.getType() == HitResult.Type.MISS) {
                 return;
             }
+
+            if (world.getBlockState(pos).getBlock() instanceof BottleBlock bottleBlock) {
+                world.breakBlock(pos, false);
+            }
+
             ParticleEffect particleEffect = new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(blockHitResult.getBlockPos()));
             world.spawnParticles(particleEffect, blockHitResult.getPos().x, blockHitResult.getPos().y, blockHitResult.getPos().z, 1, 0, 0, 0, 1);
         }
@@ -215,7 +223,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         player.getItemCooldownManager().set(this, this.fireCooldown);
         for (int i = 0; i < this.pelletCount; ++i) {
             // TODO bullet spread
-            this.handleHit(GunHitscanHelper.getEntityCollision(player, this.range), world, serverPlayer);
+            this.handleHit(GunHitscanHelper.getCollision(player, this.range), world, serverPlayer);
         }
 
         if (!player.getAbilities().creativeMode) {
