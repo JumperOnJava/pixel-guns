@@ -1,9 +1,7 @@
 package com.ultreon.mods.pixelguns.mixin.client.gun.ads;
 
 import com.mojang.authlib.GameProfile;
-
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
-
 import com.ultreon.mods.pixelguns.util.ZoomablePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -13,7 +11,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,20 +26,23 @@ public abstract class AdsZoom extends PlayerEntity implements ZoomablePlayer {
     }
 
     // Apply camera zoom on ADS
-    @Inject(method = "getFovMultiplier", at = @At("TAIL"), cancellable = true)
-    public void zoomLevel(CallbackInfoReturnable<Float> ci) {
-        ItemStack gun = this.getStackInHand(Hand.MAIN_HAND);
-        if (gun.getItem() instanceof GunItem && MinecraftClient.getInstance().mouse.wasRightButtonClicked() && GunItem.isLoaded(gun)) {
-            NbtCompound nbtCompound = gun.getOrCreateNbt();
-            if (nbtCompound.getBoolean("isScoped")) {
-                ci.setReturnValue(0.2f);
-            } else {
-                ci.setReturnValue(0.8f);
+    @Inject(method = "getFovMultiplier", at = @At(value = "TAIL"), cancellable = true)
+    private void getFovMultiplier(CallbackInfoReturnable<Float> cir) {
+        if (MinecraftClient.getInstance().options.useKey.isPressed()) {
+            ItemStack stack = getStackInHand(Hand.MAIN_HAND);
+            if (stack.getItem() instanceof GunItem && GunItem.isLoaded(stack)) {
+                NbtCompound nbt = stack.getOrCreateNbt();
+                if (nbt.getBoolean("isScoped")) {
+                    cir.setReturnValue(0.2f);
+                }
+                else {
+                    cir.setReturnValue(0.8f);
+                }
+                isPlayerZoomed = true;
             }
-            isPlayerZoomed = true;
-        }
-        else {
-            isPlayerZoomed = false;
+            else {
+                isPlayerZoomed = false;
+            }
         }
     }
 
