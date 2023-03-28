@@ -17,13 +17,13 @@ import net.minecraft.registry.Registry;
 
 public class BlockRegistry {
     public static final Block WORKSHOP;
-    public static final Block BOTTLE;
+    public static final Block LIME_BOTTLE;
     public static final Block LEMON_BOTTLE;
     public static final Block ORANGE_BOTTLE;
 
     static {
         WORKSHOP = BlockRegistry.register("workshop", new WorkshopBlock());
-        BOTTLE = BlockRegistry.register("bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
+        LIME_BOTTLE = BlockRegistry.register("lime_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
         LEMON_BOTTLE = BlockRegistry.register("lemon_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
         ORANGE_BOTTLE = BlockRegistry.register("orange_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
     }
@@ -37,7 +37,7 @@ public class BlockRegistry {
 
         public static void registerBlockRenderers() {
             RENDERER.registerBlockRenderer(BlockRegistry.WORKSHOP, RenderLayer.getCutout());
-            RENDERER.registerBlockRenderer(BlockRegistry.BOTTLE, RenderLayer.getCutoutMipped());
+            RENDERER.registerBlockRenderer(BlockRegistry.LIME_BOTTLE, RenderLayer.getCutoutMipped());
             RENDERER.registerBlockRenderer(BlockRegistry.LEMON_BOTTLE, RenderLayer.getCutoutMipped());
             RENDERER.registerBlockRenderer(BlockRegistry.ORANGE_BOTTLE, RenderLayer.getCutoutMipped());
         }

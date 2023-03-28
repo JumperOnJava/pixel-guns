@@ -50,7 +50,7 @@ public class ItemGroupRegistry {
             entries.add(ItemRegistry.LONG_SCOPE);
 
             entries.add(ItemRegistry.WORKSHOP);
-            entries.add(ItemRegistry.BOTTLE);
+            entries.add(ItemRegistry.LIME_BOTTLE);
             entries.add(ItemRegistry.LEMON_BOTTLE);
             entries.add(ItemRegistry.ORANGE_BOTTLE);
 
