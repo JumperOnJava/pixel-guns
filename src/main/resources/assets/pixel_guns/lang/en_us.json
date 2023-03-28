@@ -39,6 +39,8 @@
 
 	"block.pixel_guns.workshop" : "Workshop",
 	"block.pixel_guns.bottle": "Bottle",
+	"block.pixel_guns.lemon_bottle": "Lemon Bottle",
+	"block.pixel_guns.orange_bottle": "Orange Bottle",
 
 	"attack.pixel_guns.energy_orb": "%1$s got obliterated from an Energy Orb",
 

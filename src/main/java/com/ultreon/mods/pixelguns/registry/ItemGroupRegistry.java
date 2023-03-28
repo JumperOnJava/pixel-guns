@@ -51,6 +51,8 @@ public class ItemGroupRegistry {
 
             entries.add(ItemRegistry.WORKSHOP);
             entries.add(ItemRegistry.BOTTLE);
+            entries.add(ItemRegistry.LEMON_BOTTLE);
+            entries.add(ItemRegistry.ORANGE_BOTTLE);
 
             entries.add(ItemRegistry.GAS_MASK);
             entries.add(ItemRegistry.ARMORED_VEST);
