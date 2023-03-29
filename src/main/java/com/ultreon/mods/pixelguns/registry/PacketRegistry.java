@@ -16,14 +16,13 @@ public class PacketRegistry {
     public static final Identifier GUN_SHOOT = ResourcePath.get("shoot");
     public static final Identifier GUN_AIM = ResourcePath.get("aim");
     public static final Identifier WORKSHOP_ASSEMBLE = ResourcePath.get("assemble");
-    public static final Identifier GUN_COOLDOWN_2_S = ResourcePath.get("cooldown_2_s");
-    public static final Identifier GUN_COOLDOWN_2_C = ResourcePath.get("cooldown_2_c");
+    public static final Identifier GUN_COOLDOWN = ResourcePath.get("cooldown");
     public static final Identifier GRENADE_EXPLODE = ResourcePath.get("grenade_explode");
 
     public static class CLIENT {
         public static void registerPackets() {
             PacketRegistry.CLIENT.registerPacket(GUN_RECOIL, new GunRecoilS2CPacket());
-            PacketRegistry.CLIENT.registerPacket(GUN_COOLDOWN_2_C, new GunCooldownS2CPacket());
+            PacketRegistry.CLIENT.registerPacket(GUN_COOLDOWN, new GunCooldownS2CPacket());
             PacketRegistry.CLIENT.registerPacket(GRENADE_EXPLODE, new GrenadeExplodeS2CPacket());
         }
 
@@ -38,7 +37,6 @@ public class PacketRegistry {
             PacketRegistry.SERVER.registerPacket(GUN_RELOAD, new GunReloadC2SPacket());
             PacketRegistry.SERVER.registerPacket(GUN_SHOOT, new GunShootC2SPacket());
             PacketRegistry.SERVER.registerPacket(WORKSHOP_ASSEMBLE, new WorkshopCraftC2SPacket());
-            PacketRegistry.SERVER.registerPacket(GUN_COOLDOWN_2_S, new GunCooldownC2SPacket());
         }
 
         private static void registerPacket(Identifier id, ServerPlayNetworking.PlayChannelHandler packetHandler) {

@@ -1,5 +1,6 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
+import com.ultreon.mods.pixelguns.PixelGunsClient;
 import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.event.GunFireEvent;
 import com.ultreon.mods.pixelguns.event.forge.Event;
@@ -13,6 +14,8 @@ import com.ultreon.mods.pixelguns.util.InventoryUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -39,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -120,6 +124,10 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
         ItemCooldownManager cooldownManager = ((PlayerEntity) entity).getItemCooldownManager();
 
+        if (!nbtCompound.contains("uuid")) {
+            nbtCompound.putUuid("uuid", UUID.randomUUID());
+        }
+
         if (!(nbtCompound.contains("reloadTick") && nbtCompound.contains("Clip") && nbtCompound.contains("isScoped") && nbtCompound.contains("isReloading"))) {
             this.setDefaultNBT(nbtCompound);
         }
@@ -144,10 +152,22 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         }
 
         if (cooldownManager.isCoolingDown(stack.getItem())) {
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeItemStack(stack);
-            buf.writeFloat(cooldownManager.getCooldownProgress(stack.getItem(), 0));
-            ClientPlayNetworking.send(PacketRegistry.GUN_COOLDOWN_2_S, buf);
+            float cooldown = cooldownManager.getCooldownProgress(stack.getItem(), 0);
+
+            if (world.isClient) {
+                PixelGunsClient.addOrUpdateTrackedGuns(nbtCompound.getUuid("uuid"), cooldown);
+            }
+            else {
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeUuid(nbtCompound.getUuid("uuid"));
+                buf.writeFloat(cooldown);
+
+                for (ServerPlayerEntity serverPlayer : PlayerLookup.tracking(entity)) {
+                    if (!serverPlayer.getUuid().equals(entity.getUuid())) {
+                        ServerPlayNetworking.send(serverPlayer, PacketRegistry.GUN_COOLDOWN, buf);
+                    }
+                }
+            }
         }
     }
 
