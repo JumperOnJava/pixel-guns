@@ -1,23 +1,23 @@
 package com.ultreon.mods.pixelguns.registry;
 
+import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.network.packet.c2s.play.*;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GrenadeExplodeS2CPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GunCooldownS2CPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GunRecoilS2CPacket;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 
 public class PacketRegistry {
-    public static final Identifier GUN_RECOIL = ResourcePath.get("recoil");
-    public static final Identifier GUN_RELOAD = ResourcePath.get("reload");
-    public static final Identifier GUN_SHOOT = ResourcePath.get("shoot");
-    public static final Identifier GUN_AIM = ResourcePath.get("aim");
-    public static final Identifier WORKSHOP_ASSEMBLE = ResourcePath.get("assemble");
-    public static final Identifier GUN_COOLDOWN = ResourcePath.get("cooldown");
-    public static final Identifier GRENADE_EXPLODE = ResourcePath.get("grenade_explode");
+    public static final Identifier GUN_RECOIL = PixelGuns.id("recoil");
+    public static final Identifier GUN_RELOAD = PixelGuns.id("reload");
+    public static final Identifier GUN_SHOOT = PixelGuns.id("shoot");
+    public static final Identifier GUN_AIM = PixelGuns.id("aim");
+    public static final Identifier WORKSHOP_ASSEMBLE = PixelGuns.id("assemble");
+    public static final Identifier GUN_COOLDOWN = PixelGuns.id("cooldown");
+    public static final Identifier GRENADE_EXPLODE = PixelGuns.id("grenade_explode");
 
     public static class CLIENT {
         public static void registerPackets() {

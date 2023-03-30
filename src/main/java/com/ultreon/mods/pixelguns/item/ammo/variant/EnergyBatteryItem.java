@@ -9,20 +9,20 @@ import java.util.List;
 
 public class EnergyBatteryItem extends BulletItem {
 
-	public EnergyBatteryItem() {
-		super(new FabricItemSettings().maxCount(12));
-	}
+    public EnergyBatteryItem() {
+        super(new FabricItemSettings().maxCount(12));
+    }
 
-	@Override
-	public boolean hasGlint(ItemStack itemStack) {
-		return true;
-	}
+    @Override
+    public boolean hasGlint(ItemStack itemStack) {
+        return true;
+    }
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return List.of(
-			new ItemStack(Items.IRON_INGOT, 8),
-			new ItemStack(Items.LIGHTNING_ROD, 1)
-		).toArray(new ItemStack[0]);
-	}
+    @Override
+    public ItemStack[] getIngredients() {
+        return List.of(
+                new ItemStack(Items.IRON_INGOT, 8),
+                new ItemStack(Items.LIGHTNING_ROD, 1)
+        ).toArray(new ItemStack[0]);
+    }
 }

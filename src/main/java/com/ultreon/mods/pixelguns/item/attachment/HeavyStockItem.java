@@ -7,15 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class HeavyStockItem extends Item implements WorkshopCraftable {
-	public HeavyStockItem() {
-		super(new FabricItemSettings());
-	}
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return new ItemStack[] {
-			new ItemStack(Items.GUNPOWDER, 2),
-			new ItemStack(Items.IRON_INGOT, 4)
-		};
-	}
+    public HeavyStockItem() {
+        super(new FabricItemSettings());
+    }
+
+    @Override
+    public ItemStack[] getIngredients() {
+        return new ItemStack[]{
+                new ItemStack(Items.GUNPOWDER, 2),
+                new ItemStack(Items.IRON_INGOT, 4)
+        };
+    }
 }

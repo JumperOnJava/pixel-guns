@@ -7,15 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class MediumScopeItem extends Item implements WorkshopCraftable {
-	public MediumScopeItem() {
-		super(new FabricItemSettings());
-	}
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return new ItemStack[] {
-			new ItemStack(Items.GLOWSTONE_DUST, 1),
-			new ItemStack(Items.IRON_INGOT, 4)
-		};
-	}
+    public MediumScopeItem() {
+        super(new FabricItemSettings());
+    }
+
+    @Override
+    public ItemStack[] getIngredients() {
+        return new ItemStack[]{
+                new ItemStack(Items.GLOWSTONE_DUST, 1),
+                new ItemStack(Items.IRON_INGOT, 4)
+        };
+    }
 }

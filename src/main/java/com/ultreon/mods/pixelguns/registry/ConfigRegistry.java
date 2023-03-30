@@ -1,11 +1,14 @@
 package com.ultreon.mods.pixelguns.registry;
 
 import com.ultreon.mods.pixelguns.PixelGuns;
-import com.ultreon.mods.pixelguns.config.PixelGunsConfig;
 import eu.midnightdust.lib.config.MidnightConfig;
 
-public class ConfigRegistry {
+public class ConfigRegistry extends MidnightConfig {
+
+    @Entry
+    public static boolean enable_recoil = true;
+
     public static void registerConfig() {
-        MidnightConfig.init(PixelGuns.MOD_ID, PixelGunsConfig.class);
+        init(PixelGuns.MOD_ID, ConfigRegistry.class);
     }
 }

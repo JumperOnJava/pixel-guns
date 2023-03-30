@@ -14,17 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class ScopedCrosshairRemover {
+
     @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
     public void removeCrosshair(MatrixStack matrixStack, CallbackInfo info) {
         PlayerEntity player = MinecraftClient.getInstance().player;
         assert player != null;
         ItemStack stack = player.getMainHandStack();
         if (stack.getItem() instanceof GunItem gunItem) {
-            if (
-                GunItem.isLoaded(stack)
-                && MinecraftClient.getInstance().options.useKey.isPressed()
-                && gunItem != ItemRegistry.SNIPER_RIFLE
-            ) {
+            if (GunItem.isLoaded(stack) && MinecraftClient.getInstance().options.useKey.isPressed() && gunItem != ItemRegistry.SNIPER_RIFLE) {
                 info.cancel();
             }
         }

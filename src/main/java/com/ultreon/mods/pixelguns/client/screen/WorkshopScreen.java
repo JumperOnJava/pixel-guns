@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.client.screen.handler.WorkshopScreenHandler;
 import com.ultreon.mods.pixelguns.network.packet.c2s.play.WorkshopCraftC2SPacket;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
 
-    private static final Identifier TEXTURE = ResourcePath.get("textures/gui/container/workshop.png");
+    private static final Identifier TEXTURE = PixelGuns.id("textures/gui/container/workshop.png");
 
     private Tab currentTab;
     private final List<Tab> tabs = new ArrayList<>();

@@ -8,10 +8,11 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 @Environment(value = EnvType.CLIENT)
-public class KeybindRegistry {
-    public static final KeyBinding reload = new KeyBinding("key.pixel_guns.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.pixel_guns.binds");
+public class KeyBindRegistry {
 
-    public static void registerKeybinds() {
-        KeyBindingHelper.registerKeyBinding(reload);
+    public static final KeyBinding RELOAD_KEY = new KeyBinding("key.pixel_guns.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.pixel_guns.binds");
+
+    public static void registerKeyBinds() {
+        KeyBindingHelper.registerKeyBinding(RELOAD_KEY);
     }
 }

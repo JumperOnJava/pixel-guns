@@ -33,26 +33,26 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
     public RocketLauncherItem() {
         super(
-            false,
-            50.0f,
-            128,
-            30,
-            1,
-            ItemRegistry.ROCKET,
-            30,
-            0,
-            25.0f,
-            1,
-            LoadingType.INDIVIDUAL,
-            SoundRegistry.ROCKET_LAUNCHER_RELOAD,
-            SoundRegistry.ROCKET_LAUNCHER_FIRE,
-            1,
-            false,
-            new int[] {1, 8, 17},
-            new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 55),
-                new ItemStack(Items.IRON_NUGGET, 10)
-            }
+                false,
+                50.0f,
+                128,
+                30,
+                1,
+                ItemRegistry.ROCKET,
+                30,
+                0,
+                25.0f,
+                1,
+                LoadingType.INDIVIDUAL,
+                SoundRegistry.ROCKET_LAUNCHER_RELOAD,
+                SoundRegistry.ROCKET_LAUNCHER_FIRE,
+                1,
+                false,
+                new int[]{1, 8, 17},
+                new ItemStack[]{
+                        new ItemStack(Items.IRON_INGOT, 55),
+                        new ItemStack(Items.IRON_NUGGET, 10)
+                }
         );
 
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
@@ -65,7 +65,6 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
             Event.call(new GunFireEvent.Post(player, stack));
             return;
         }
-
 
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
@@ -112,8 +111,8 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", state -> PlayState.CONTINUE)
-            .triggerableAnim("reload", Animations.RELOAD)
-            .triggerableAnim("fire", Animations.FIRE)
+                .triggerableAnim("reload", Animations.RELOAD)
+                .triggerableAnim("fire", Animations.FIRE)
         );
     }
 

@@ -17,16 +17,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public abstract class AmmoHud {
 
-    @Shadow @Final private MinecraftClient client;
-    @Shadow private int scaledWidth;
-    @Shadow protected abstract PlayerEntity getCameraPlayer();
-    @Shadow public abstract TextRenderer getTextRenderer();
+    @Shadow
+    @Final
+    private MinecraftClient client;
+    @Shadow
+    private int scaledWidth;
+
+    @Shadow
+    protected abstract PlayerEntity getCameraPlayer();
+
+    @Shadow
+    public abstract TextRenderer getTextRenderer();
 
     @Inject(method = "render", at = @At("TAIL"))
     public void renderAmmoHud(MatrixStack matrixStack, float f, CallbackInfo ci) {
         if (!this.client.options.hudHidden) {
             PlayerEntity player = this.getCameraPlayer();
-            if (player == null) return;
+            if (player == null) {
+                return;
+            }
 
             ItemStack heldItem = player.getMainHandStack();
             if (heldItem.getItem() instanceof GunItem) {

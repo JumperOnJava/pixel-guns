@@ -18,69 +18,70 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.List;
-
 public class RocketEntity extends ThrownItemEntity implements GeoEntity {
 
-	public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
-		super(entityType, world);
-	}
+    public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
-	public RocketEntity(World world, LivingEntity owner) {
-		super(EntityRegistry.ROCKET, owner, world);
-	}
+    public RocketEntity(World world, LivingEntity owner) {
+        super(EntityRegistry.ROCKET, owner, world);
+    }
 
-	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-		entityHitResult.getEntity().damage(DamageSource.thrownProjectile(this, this.getOwner()), 0.0f);
-	}
+    @Override
+    protected void onEntityHit(EntityHitResult entityHitResult) {
+        super.onEntityHit(entityHitResult);
+        entityHitResult.getEntity().damage(DamageSource.thrownProjectile(this, this.getOwner()), 0.0f);
+    }
 
-	private void explode() {
-		if (world.isClient) return;
-
-		Explosion explosion = world.createExplosion(this, getX(), getY(), getZ(), 2.0f, false, World.ExplosionSourceType.MOB);
-
-		Box box = new Box(getBlockPos()).expand(6);
-		for (Entity entity : world.getNonSpectatingEntities(Entity.class, box)) {
-			entity.damage(DamageSource.explosion(explosion), 50);
+    private void explode() {
+		if (world.isClient) {
+			return;
 		}
 
-		discard();
-	}
+        Explosion explosion = world.createExplosion(this, getX(), getY(), getZ(), 2.0f, false, World.ExplosionSourceType.MOB);
 
-	@Override
-	protected void onCollision(HitResult hitResult) {
-		super.onCollision(hitResult);
-		this.explode();
-	}
+        Box box = new Box(getBlockPos()).expand(6);
+        for (Entity entity : world.getNonSpectatingEntities(Entity.class, box)) {
+            entity.damage(DamageSource.explosion(explosion), 50);
+        }
 
-	@Override
-	public boolean hasNoGravity() {
-		return true;
-	}
+        discard();
+    }
 
-	@Override
-	protected Item getDefaultItem() {
-		return ItemRegistry.ROCKET;
-	}
+    @Override
+    protected void onCollision(HitResult hitResult) {
+        super.onCollision(hitResult);
+        this.explode();
+    }
 
-	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-	}
+    @Override
+    public boolean hasNoGravity() {
+        return true;
+    }
 
-	/*
-	 * Animation Side
-	 */
+    @Override
+    protected Item getDefaultItem() {
+        return ItemRegistry.ROCKET;
+    }
 
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+    }
 
-	@Override
-	public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
+    /*
+     * Animation Side
+     */
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
-	}
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
 }

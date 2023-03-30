@@ -3,8 +3,6 @@ package com.ultreon.mods.pixelguns.entity.projectile.thrown;
 import com.ultreon.mods.pixelguns.registry.EntityRegistry;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
-import com.ultreon.mods.pixelguns.registry.SoundRegistry;
-
 import com.ultreon.mods.pixelguns.util.GrenadeExplosion;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -18,10 +16,7 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -29,10 +24,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-
 import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.explosion.ExplosionBehavior;
-
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -59,7 +52,9 @@ public class GrenadeEntity extends ThrownItemEntity implements GeoEntity {
     }
 
     private void explode() {
-        if (world.isClient) return;
+        if (world.isClient) {
+            return;
+        }
 
         Explosion explosion = new Explosion(world, this, null, new ExplosionBehavior() {
             @Override

@@ -35,8 +35,9 @@ public class CrowbarItem extends SwordItem implements GeoItem {
 
             @Override
             public BuiltinModelItemRenderer getCustomRenderer() {
-                if (this.renderer == null)
+                if (this.renderer == null) {
                     this.renderer = GeoRendererGenerator.item(CrowbarItem.this);
+                }
 
                 return this.renderer;
             }
@@ -50,7 +51,6 @@ public class CrowbarItem extends SwordItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
     }
 
     @Override
@@ -58,4 +58,3 @@ public class CrowbarItem extends SwordItem implements GeoItem {
         return this.cache;
     }
 }
-

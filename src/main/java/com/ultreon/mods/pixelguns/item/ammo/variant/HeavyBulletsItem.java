@@ -8,15 +8,16 @@ import net.minecraft.item.Items;
 import java.util.List;
 
 public class HeavyBulletsItem extends BulletItem {
-	public HeavyBulletsItem() {
-		super(new FabricItemSettings().maxCount(64));
-	}
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return List.of(
-			new ItemStack(Items.COPPER_INGOT, 4),
-			new ItemStack(Items.GUNPOWDER, 1)
-		).toArray(new ItemStack[0]);
-	}
+    public HeavyBulletsItem() {
+        super(new FabricItemSettings().maxCount(64));
+    }
+
+    @Override
+    public ItemStack[] getIngredients() {
+        return List.of(
+                new ItemStack(Items.COPPER_INGOT, 4),
+                new ItemStack(Items.GUNPOWDER, 1)
+        ).toArray(new ItemStack[0]);
+    }
 }

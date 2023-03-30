@@ -1,21 +1,23 @@
 package com.ultreon.mods.pixelguns.registry;
 
-import com.ultreon.mods.pixelguns.armor.ArmoredArmor;
-import com.ultreon.mods.pixelguns.item.*;
-import com.ultreon.mods.pixelguns.item.ammo.variant.RocketItem;
+import com.ultreon.mods.pixelguns.PixelGuns;
+import com.ultreon.mods.pixelguns.item.GeoArmor;
+import com.ultreon.mods.pixelguns.item.CrowbarItem;
+import com.ultreon.mods.pixelguns.item.GasMaskItem;
+import com.ultreon.mods.pixelguns.item.GrenadeItem;
+import com.ultreon.mods.pixelguns.item.KatanaItem;
 import com.ultreon.mods.pixelguns.item.ammo.variant.*;
 import com.ultreon.mods.pixelguns.item.attachment.*;
 import com.ultreon.mods.pixelguns.item.gun.variant.*;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ShieldItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-@SuppressWarnings({"unused", "SameParameterValue"})
 public class ItemRegistry {
 
     // Ammunition
@@ -38,7 +40,7 @@ public class ItemRegistry {
     public static final Item INFINITY_GUN = ItemRegistry.register("infinity_gun", new InfinityGunItem());
 
     // Armor
-    public static final Item ARMORED_VEST = ItemRegistry.register("armored_vest", new ArmoredArmor(EquipmentSlot.CHEST));
+    public static final Item ARMORED_VEST = ItemRegistry.register("armored_vest", new GeoArmor(ArmorRegistry.ARMORED, EquipmentSlot.CHEST));
     public static final Item GAS_MASK = ItemRegistry.register("gas_mask", new GasMaskItem());
 
     // Weapons
@@ -54,25 +56,27 @@ public class ItemRegistry {
     public static final Item SPECIALISED_GRIP = ItemRegistry.register("specialised_grip", new SpecialisedGripItem());
 
     // Block Items
-    public static final Item WORKSHOP = ItemRegistry.register(BlockRegistry.WORKSHOP, ItemGroupRegistry.MISC);
-    public static final Item LIME_BOTTLE = ItemRegistry.register(BlockRegistry.LIME_BOTTLE, ItemGroupRegistry.MISC);
-    public static final Item LEMON_BOTTLE = ItemRegistry.register(BlockRegistry.LEMON_BOTTLE, ItemGroupRegistry.MISC);
-    public static final Item ORANGE_BOTTLE = ItemRegistry.register(BlockRegistry.ORANGE_BOTTLE, ItemGroupRegistry.MISC);
+    public static final Item WORKSHOP = ItemRegistry.register(BlockRegistry.WORKSHOP);
+    public static final Item LIME_BOTTLE = ItemRegistry.register(BlockRegistry.LIME_BOTTLE);
+    public static final Item LEMON_BOTTLE = ItemRegistry.register(BlockRegistry.LEMON_BOTTLE);
+    public static final Item ORANGE_BOTTLE = ItemRegistry.register(BlockRegistry.ORANGE_BOTTLE);
 
     public static final Item POLICE_SHIELD = ItemRegistry.register("police_shield", new ShieldItem(new Item.Settings().maxCount(800)));
 
-    private static Item register(Block block, ItemGroup itemGroup) {
+    public static void init() {}
+
+    private static Item register(Block block) {
         BlockItem blockItem = new BlockItem(block, new Item.Settings());
         return ItemRegistry.register(Registries.BLOCK.getId(blockItem.getBlock()), blockItem);
     }
 
     private static Item register(String name, Item item) {
-        return ItemRegistry.register(ResourcePath.get(name), item);
+        return ItemRegistry.register(PixelGuns.id(name), item);
     }
 
     private static Item register(Identifier identifier, Item item) {
-        if (item instanceof BlockItem) {
-            ((BlockItem)item).appendBlocks(Item.BLOCK_ITEMS, item);
+        if (item instanceof BlockItem blockItem) {
+            blockItem.appendBlocks(Item.BLOCK_ITEMS, item);
         }
         return Registry.register(Registries.ITEM, identifier, item);
     }

@@ -7,15 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class SpecialisedGripItem extends Item implements WorkshopCraftable {
-	public SpecialisedGripItem() {
-		super(new FabricItemSettings());
-	}
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return new ItemStack[] {
-			new ItemStack(Items.IRON_NUGGET, 8),
-			new ItemStack(Items.IRON_INGOT, 2)
-		};
-	}
+    public SpecialisedGripItem() {
+        super(new FabricItemSettings());
+    }
+
+    @Override
+    public ItemStack[] getIngredients() {
+        return new ItemStack[]{
+                new ItemStack(Items.IRON_NUGGET, 8),
+                new ItemStack(Items.IRON_INGOT, 2)
+        };
+    }
 }

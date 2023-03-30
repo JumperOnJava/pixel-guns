@@ -1,34 +1,35 @@
 package com.ultreon.mods.pixelguns.item.gun.variant;
 
-import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class PistolItem extends GunItem {
+
     public PistolItem() {
         super(
-            false,
-            5.0f,
-            128,
-            4,
-            12,
-            ItemRegistry.LIGHT_BULLETS,
-            26,
-            0.25f,
-            10.0f,
-            1,
-            LoadingType.CLIP,
-            SoundRegistry.PISTOL_RELOAD,
-            SoundRegistry.PISTOL_FIRE,
-            1,
-            false,
-            new int[] {6, 16, 20},
-            new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 25),
-                new ItemStack(Items.IRON_NUGGET, 15)
-            }
+                false,
+                5.0f,
+                128,
+                4,
+                12,
+                ItemRegistry.LIGHT_BULLETS,
+                26,
+                0.25f,
+                10.0f,
+                1,
+                LoadingType.CLIP,
+                SoundRegistry.PISTOL_RELOAD,
+                SoundRegistry.PISTOL_FIRE,
+                1,
+                false,
+                new int[]{6, 16, 20},
+                new ItemStack[]{
+                        new ItemStack(Items.IRON_INGOT, 25),
+                        new ItemStack(Items.IRON_NUGGET, 15)
+                }
         );
     }
 }

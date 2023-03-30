@@ -1,7 +1,7 @@
 package com.ultreon.mods.pixelguns.client;
 
+import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -24,24 +24,26 @@ import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
 public class GeoRendererGenerator {
-	public static <T extends GunItem & GeoAnimatable> GeoItemRenderer<T> gun(T item) {
-		return new GeoItemRenderer<>(new DefaultedGunGeoModel<>(Registries.ITEM.getId(item)));
-	}
-	public static <T extends Item & GeoAnimatable> GeoItemRenderer<T> item(T item) {
-		return new GeoItemRenderer<>(new DefaultedItemGeoModel<>(Registries.ITEM.getId(item)));
-	}
 
-	public static <T extends Entity & GeoEntity> GeoEntityRenderer<T> entity(EntityType<T> entityType, EntityRendererFactory.Context renderManager) {
-		return new GeoEntityRenderer<>(renderManager, new DefaultedEntityGeoModel<>(Registries.ENTITY_TYPE.getId(entityType))) {
-			@Override
-			public void preRender(MatrixStack poseStack, T animatable, BakedGeoModel model, VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-				RenderUtils.faceRotation(poseStack, animatable, partialTick);
-				super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-			}
-		};
-	}
+    public static <T extends GunItem & GeoAnimatable> GeoItemRenderer<T> gun(T item) {
+        return new GeoItemRenderer<>(new DefaultedItemGeoModel<>(Registries.ITEM.getId(item).withPrefixedPath("gun/")));
+    }
 
-	public static <T extends ArmorItem & GeoItem> GeoArmorRenderer<T> armor(T armor) {
-		return new GeoArmorRenderer<>(new DefaultedItemGeoModel<>(ResourcePath.get("armor/" + armor.getMaterial().getName() + "_armor")));
-	}
+    public static <T extends Item & GeoAnimatable> GeoItemRenderer<T> item(T item) {
+        return new GeoItemRenderer<>(new DefaultedItemGeoModel<>(Registries.ITEM.getId(item)));
+    }
+
+    public static <T extends Entity & GeoEntity> GeoEntityRenderer<T> entity(EntityType<T> entityType, EntityRendererFactory.Context renderManager) {
+        return new GeoEntityRenderer<>(renderManager, new DefaultedEntityGeoModel<>(Registries.ENTITY_TYPE.getId(entityType))) {
+            @Override
+            public void preRender(MatrixStack poseStack, T animatable, BakedGeoModel model, VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+                RenderUtils.faceRotation(poseStack, animatable, partialTick);
+                super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+            }
+        };
+    }
+
+    public static <T extends ArmorItem & GeoItem> GeoArmorRenderer<T> armor(T armor) {
+        return new GeoArmorRenderer<>(new DefaultedItemGeoModel<>(PixelGuns.id("armor/" + armor.getMaterial().getName() + "_armor")));
+    }
 }

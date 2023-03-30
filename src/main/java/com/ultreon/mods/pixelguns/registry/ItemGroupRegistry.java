@@ -1,6 +1,6 @@
 package com.ultreon.mods.pixelguns.registry;
 
-import com.ultreon.mods.pixelguns.util.ResourcePath;
+import com.ultreon.mods.pixelguns.PixelGuns;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroup;
@@ -8,18 +8,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 public class ItemGroupRegistry {
-    public static final ItemGroup MISC = FabricItemGroup.builder(ResourcePath.get("misc"))
+
+    public static final ItemGroup MISC = FabricItemGroup.builder(PixelGuns.id("misc"))
         .displayName(Text.translatable("itemGroup.pixel_guns.misc"))
         .icon(() -> new ItemStack(ItemRegistry.ARMORED_VEST))
         .build();
-    public static final ItemGroup WEAPONS = FabricItemGroup.builder(ResourcePath.get("guns"))
+
+    public static final ItemGroup WEAPONS = FabricItemGroup.builder(PixelGuns.id("guns"))
         .displayName(Text.translatable("itemGroup.pixel_guns.guns"))
         .icon(() -> new ItemStack(ItemRegistry.REVOLVER))
         .build();
 
     public static void registerItemGroups() {
         ItemGroupEvents.modifyEntriesEvent(WEAPONS).register(entries -> {
-
             entries.add(ItemRegistry.PISTOL);
             entries.add(ItemRegistry.REVOLVER);
             entries.add(ItemRegistry.COMBAT_SHOTGUN);

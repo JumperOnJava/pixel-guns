@@ -1,16 +1,15 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
+import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.PixelGunsClient;
 import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.event.GunFireEvent;
 import com.ultreon.mods.pixelguns.event.forge.Event;
+import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
-import com.ultreon.mods.pixelguns.registry.KeybindRegistry;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
-import io.netty.buffer.Unpooled;
 import com.ultreon.mods.pixelguns.util.InventoryUtil;
-
+import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -40,11 +39,10 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
-
-import org.jetbrains.annotations.NotNull;
 
 public abstract class GunItem extends Item implements WorkshopCraftable {
 
@@ -110,13 +108,9 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        String ammoType =       Formatting.GRAY + "Ammo Type: " + Formatting.WHITE + this.ammunition.getName().getString();
-        String gunDamage =      Formatting.GRAY + "Damage: "    + Formatting.WHITE + this.damage;
-        String gunMagazine =    Formatting.GRAY + "Ammo: "      + Formatting.WHITE + GunItem.remainingAmmo(stack) + "/" + this.magazineSize;
-
-        tooltip.add(Text.literal(ammoType));
-        tooltip.add(Text.literal(gunDamage));
-        tooltip.add(Text.literal(gunMagazine));
+        tooltip.add(Text.literal(Formatting.GRAY + "Ammo Type: " + Formatting.WHITE + this.ammunition.getName().getString()));
+        tooltip.add(Text.literal(Formatting.GRAY + "Damage: " + Formatting.WHITE + this.damage));
+        tooltip.add(Text.literal(Formatting.GRAY + "Ammo: " + Formatting.WHITE + GunItem.remainingAmmo(stack) + "/" + this.magazineSize));
     }
 
     @Override
@@ -132,10 +126,10 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
             this.setDefaultNBT(nbtCompound);
         }
 
-        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeybindRegistry.reload.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean("isReloading")) {
+        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeyBindRegistry.RELOAD_KEY.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean("isReloading")) {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeBoolean(true);
-            ClientPlayNetworking.send(ResourcePath.get("reload"), buf);
+            ClientPlayNetworking.send(PixelGuns.id("reload"), buf);
         }
 
         if (nbtCompound.getBoolean("isReloading") && (((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) != stack || GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) <= 0 && this.reloadCycles <= 1 || nbtCompound.getInt("reloadTick") >= this.reloadCooldown || GunItem.remainingAmmo(stack) >= this.magazineSize && this.reloadCycles <= 1)) {
@@ -144,7 +138,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
         if (nbtCompound.getBoolean("isReloading")) {
             this.doReloadTick(world, nbtCompound, (PlayerEntity) entity, stack);
-        } else {
+        }
+        else {
             if (nbtCompound.getInt("reloadTick") > this.reloadSoundStages[2] && nbtCompound.getInt("reloadTick") <= this.reloadCooldown) {
                 this.finishReload((PlayerEntity) entity, stack);
             }
@@ -177,25 +172,37 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         if (!world.isClient()) {
             if (reloadTick == this.reloadSoundStages[0]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[0], SoundCategory.MASTER, 1.0f, 1.0f);
-            } else if (reloadTick == this.reloadSoundStages[1]) {
+            }
+            else if (reloadTick == this.reloadSoundStages[1]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[1], SoundCategory.MASTER, 1.0f, 1.0f);
-            } else if (reloadTick == this.reloadSoundStages[2]) {
+            }
+            else if (reloadTick == this.reloadSoundStages[2]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[2], SoundCategory.MASTER, 1.0f, 1.0f);
             }
         }
         switch (this.loadingType) {
             case CLIP -> {
-                if (reloadTick < this.reloadCooldown) break;
-                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) break;
+                if (reloadTick < this.reloadCooldown) {
+                    break;
+                }
+                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) {
+                    break;
+                }
 
                 nbtCompound.putInt("currentCycle", 1);
                 this.finishReload(player, stack);
                 nbtCompound.putInt("reloadTick", 0);
             }
             case INDIVIDUAL -> {
-                if (reloadTick < this.reloadSoundStages[2]) break;
-                if (nbtCompound.getInt("currentCycle") >= this.reloadCycles) break;
-                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) break;
+                if (reloadTick < this.reloadSoundStages[2]) {
+                    break;
+                }
+                if (nbtCompound.getInt("currentCycle") >= this.reloadCycles) {
+                    break;
+                }
+                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) {
+                    break;
+                }
 
                 nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + 1);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, 1);
@@ -227,10 +234,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         }
     }
 
-
-
     public void shoot(PlayerEntity player, ItemStack stack) {
-
         Event.call(new GunFireEvent.Pre(player, stack));
 
         if (player.world.isClient) {
@@ -273,16 +277,19 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
             if (GunItem.reserveAmmoCount(player, this.ammunition) > this.magazineSize) {
                 nbtCompound.putInt("Clip", this.magazineSize);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, this.magazineSize);
-            } else {
+            }
+            else {
                 nbtCompound.putInt("Clip", GunItem.reserveAmmoCount(player, this.ammunition));
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
-        } else {
+        }
+        else {
             int ammoToLoad = this.magazineSize - nbtCompound.getInt("Clip");
             if (GunItem.reserveAmmoCount(player, this.ammunition) >= ammoToLoad) {
                 nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + ammoToLoad);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, ammoToLoad);
-            } else {
+            }
+            else {
                 nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + GunItem.reserveAmmoCount(player, this.ammunition));
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }

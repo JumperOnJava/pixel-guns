@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(MouseOptionsScreen.class)
 public class AdsSensitivityOption {
+
     /**
      * @author Skylandia
      * @reason add ADS sensitivity

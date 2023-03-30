@@ -14,13 +14,16 @@ public class WorkshopScreenHandler extends ScreenHandler {
 
         // Player's Hotbar
         int index = 0;
-        for (int x = 0; x < 9; x++)
+        for (int x = 0; x < 9; x++) {
             this.addSlot(new Slot(playerInventory, index++, 8 + 18 * x, 160));
+        }
 
         // Player's Inventory
-        for (int y = 0; y < 3; y++)
-            for (int x = 0; x < 9; x++)
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
                 this.addSlot(new Slot(playerInventory, index++, 8 + 18 * x, 102 + 18 * y));
+            }
+        }
     }
 
     @Override
@@ -34,7 +37,7 @@ public class WorkshopScreenHandler extends ScreenHandler {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
-        if(slot.hasStack()) {
+        if (slot.hasStack()) {
             ItemStack slotStack = slot.getStack();
             stack = slotStack.copy();
 
@@ -42,20 +45,22 @@ public class WorkshopScreenHandler extends ScreenHandler {
                 if (!this.insertItem(slotStack, 1, 36, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else {
+            }
+            else {
                 if (index < 28) {
-                    if(!this.insertItem(slotStack, 28, 36, false))
-                    {
+                    if (!this.insertItem(slotStack, 28, 36, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index <= 36 && !this.insertItem(slotStack, 1, 28, false)) {
+                }
+                else if (index <= 36 && !this.insertItem(slotStack, 1, 28, false)) {
                     return ItemStack.EMPTY;
                 }
             }
 
             if (slotStack.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
-            } else {
+            }
+            else {
                 slot.markDirty();
             }
 

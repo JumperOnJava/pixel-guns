@@ -1,5 +1,8 @@
 package com.ultreon.mods.pixelguns.mixin.client.gun;
 
+import com.ultreon.mods.pixelguns.item.gun.GunItem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -8,15 +11,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.ultreon.mods.pixelguns.item.gun.GunItem;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-
 @Mixin(MinecraftClient.class)
 public class AnimationPrevention {
 
-    @Shadow @Nullable public ClientPlayerEntity player;
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
     // Prevent attack animation when holding gun
     @Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)

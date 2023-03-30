@@ -21,8 +21,6 @@ public class KatanaItem extends SwordItem implements GeoItem {
         super(ToolMaterials.DIAMOND, 10, -2.4f, new FabricItemSettings());
     }
 
-
-
     /*
      * Animation Side
      */
@@ -52,7 +50,6 @@ public class KatanaItem extends SwordItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
     }
 
     @Override

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public class AdsSensitivityModifier {
 
     @ModifyArgs(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
-    private void injected(Args args) {
+    private void updateMouse(Args args) {
         double deltaX = args.get(0);
         double deltaY = args.get(1);
 

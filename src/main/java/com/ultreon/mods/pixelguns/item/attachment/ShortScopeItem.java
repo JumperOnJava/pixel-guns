@@ -7,15 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class ShortScopeItem extends Item implements WorkshopCraftable {
-	public ShortScopeItem() {
-		super(new FabricItemSettings());
-	}
 
-	@Override
-	public ItemStack[] getIngredients() {
-		return new ItemStack[] {
-			new ItemStack(Items.GLOWSTONE_DUST, 1),
-			new ItemStack(Items.IRON_INGOT, 2)
-		};
-	}
+    public ShortScopeItem() {
+        super(new FabricItemSettings());
+    }
+
+    @Override
+    public ItemStack[] getIngredients() {
+        return new ItemStack[]{
+                new ItemStack(Items.GLOWSTONE_DUST, 1),
+                new ItemStack(Items.IRON_INGOT, 2)
+        };
+    }
 }

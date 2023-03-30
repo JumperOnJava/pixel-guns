@@ -3,26 +3,25 @@ package com.ultreon.mods.pixelguns.event.forge;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Event
-{
-	private static final HashMap<Class<? extends Event>, ArrayList<EventHandler<?>>> handlers = new HashMap<>();
-	public Event() {}
+public class Event {
 
-	public static <T extends Event> void registerHandler(Class<T> type, EventHandler<T> handler)
-	{
-		handlers.computeIfAbsent(type, k -> new ArrayList<>());
-		handlers.get(type).add(handler);
-	}
-	public static <T extends Event> void call(T event)
-	{
-		if (!handlers.containsKey(event.getClass()))
-		{
-			return;
-		}
+    private static final HashMap<Class<? extends Event>, ArrayList<EventHandler<?>>> HANDLERS = new HashMap<>();
 
-		for (EventHandler handler : handlers.get(event.getClass()))
-		{
-			handler.onEvent(event);
-		}
-	}
+    public Event() {
+    }
+
+    public static <T extends Event> void registerHandler(Class<T> type, EventHandler<T> handler) {
+        HANDLERS.computeIfAbsent(type, k -> new ArrayList<>());
+        HANDLERS.get(type).add(handler);
+    }
+
+    public static <T extends Event> void call(T event) {
+        if (!HANDLERS.containsKey(event.getClass())) {
+            return;
+        }
+
+        for (EventHandler handler : HANDLERS.get(event.getClass())) {
+            handler.onEvent(event);
+        }
+    }
 }

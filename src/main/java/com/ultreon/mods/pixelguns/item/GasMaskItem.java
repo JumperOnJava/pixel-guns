@@ -1,7 +1,7 @@
 package com.ultreon.mods.pixelguns.item;
 
-import com.ultreon.mods.pixelguns.armor.HazardArmor;
 import com.ultreon.mods.pixelguns.client.GeoRendererGenerator;
+import com.ultreon.mods.pixelguns.registry.ArmorRegistry;
 import com.ultreon.mods.pixelguns.util.LivingEntityAccessor;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class GasMaskItem extends HazardArmor implements GeoItem {
+public class GasMaskItem extends GeoArmor {
 
     public GasMaskItem() {
-        super(EquipmentSlot.HEAD);
+        super(ArmorRegistry.HAZARD, EquipmentSlot.HEAD);
     }
 
     @Override
@@ -64,49 +64,14 @@ public class GasMaskItem extends HazardArmor implements GeoItem {
      * Animation Side
      */
 
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-
     @Override
     public void createRenderer(Consumer<Object> consumer) {
-//        super.createRenderer(consumer);
-        consumer.accept(new RenderProvider() {
-            private GeoItemRenderer<GasMaskItem> renderer;
+        consumer.accept(new ArmorRenderProvider() {
 
             @Override
             public BuiltinModelItemRenderer getCustomRenderer() {
-                if (this.renderer == null)
-                    this.renderer = GeoRendererGenerator.item(GasMaskItem.this);
-
-                return this.renderer;
-            }
-
-            private GeoArmorRenderer<?> armorRenderer;
-
-            @Override
-            public BipedEntityModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, BipedEntityModel<LivingEntity> original) {
-                if (this.armorRenderer == null)
-                    this.armorRenderer = GeoRendererGenerator.armor(GasMaskItem.this);
-
-                this.armorRenderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
-
-                return this.armorRenderer;
+                return GeoRendererGenerator.item(GasMaskItem.this);
             }
         });
-    }
-
-    @Override
-    public Supplier<Object> getRenderProvider() {
-        return this.renderProvider;
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

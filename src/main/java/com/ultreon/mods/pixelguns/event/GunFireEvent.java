@@ -7,51 +7,44 @@ import net.minecraft.item.ItemStack;
 /**
  * <p>Fired when a player shoots a gun.</p>
  */
-public class GunFireEvent extends PlayerEvent
-{
-	private final ItemStack stack;
+public class GunFireEvent extends PlayerEvent {
 
-	public GunFireEvent(PlayerEntity player, ItemStack stack)
-	{
-		super(player);
-		this.stack = stack;
-	}
+    private final ItemStack stack;
 
-	/**
-	 * @return The stack the player was holding when firing the gun
-	 */
-	public ItemStack getStack()
-	{
-		return stack;
-	}
+    public GunFireEvent(PlayerEntity player, ItemStack stack) {
+        super(player);
+        this.stack = stack;
+    }
 
-	/**
-	 * @return Whether this event was fired on the client side
-	 */
-	public boolean isClient()
-	{
-		return this.getEntity().getWorld().isClient();
-	}
+    /**
+     * @return The stack the player was holding when firing the gun
+     */
+    public ItemStack getStack() {
+        return stack;
+    }
 
-	/**
-	 * <p>Fired when a player is about to shoot a bullet.</p>
-	 */
-	public static class Pre extends GunFireEvent
-	{
-		public Pre(PlayerEntity player, ItemStack stack)
-		{
-			super(player, stack);
-		}
-	}
+    /**
+     * @return Whether this event was fired on the client side
+     */
+    public boolean isClient() {
+        return this.getEntity().getWorld().isClient();
+    }
 
-	/**
-	 * <p>Fired after a player has shot a bullet.</p>
-	 */
-	public static class Post extends GunFireEvent
-	{
-		public Post(PlayerEntity player, ItemStack stack)
-		{
-			super(player, stack);
-		}
-	}
+    /**
+     * <p>Fired when a player is about to shoot a bullet.</p>
+     */
+    public static class Pre extends GunFireEvent {
+        public Pre(PlayerEntity player, ItemStack stack) {
+            super(player, stack);
+        }
+    }
+
+    /**
+     * <p>Fired after a player has shot a bullet.</p>
+     */
+    public static class Post extends GunFireEvent {
+        public Post(PlayerEntity player, ItemStack stack) {
+            super(player, stack);
+        }
+    }
 }

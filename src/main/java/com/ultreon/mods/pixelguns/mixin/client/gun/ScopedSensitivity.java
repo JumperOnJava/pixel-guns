@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public class ScopedSensitivity {
 
     @ModifyArgs(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
-    private void injected(Args args) {
+    private void updateMouse(Args args) {
         double a0 = args.get(0);
         double a1 = args.get(1);
 
@@ -26,7 +26,8 @@ public class ScopedSensitivity {
             if (nbtCompound.getBoolean("isScoped")) {
                 args.set(0, a0 * 0.2);
                 args.set(1, a1 * 0.2);
-            } else {
+            }
+            else {
                 args.set(0, a0 * 0.8);
                 args.set(1, a1 * 0.8);
             }

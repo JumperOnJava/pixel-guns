@@ -2,7 +2,7 @@ package com.ultreon.mods.pixelguns.mixin.client.gun;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 
-import com.ultreon.mods.pixelguns.registry.KeybindRegistry;
+import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -47,7 +47,7 @@ public abstract class GunKeybinds {
     public void handleGunReload(CallbackInfo info) {
         assert this.player != null;
         if (this.player.getMainHandStack().getItem() instanceof GunItem) {
-            if (KeybindRegistry.reload.isPressed()) {
+            if (KeyBindRegistry.RELOAD_KEY.isPressed()) {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeBoolean(true);
                 ClientPlayNetworking.send(PacketRegistry.GUN_RELOAD, buf);
