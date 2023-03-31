@@ -18,8 +18,6 @@
     "client.gun.PlayerGunPose",
     "client.gun.ScopedCrosshairRemover",
     "client.gun.ads.AdsSensitivityModifier",
-    "client.gun.ads.AdsSensitivityOption",
-    "client.gun.ads.AdsSensitivityPersistency",
     "client.gun.ads.AdsZoom"
   ],
   "injectors": {

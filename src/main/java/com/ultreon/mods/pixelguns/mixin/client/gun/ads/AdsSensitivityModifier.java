@@ -1,7 +1,7 @@
 package com.ultreon.mods.pixelguns.mixin.client.gun.ads;
 
-import com.ultreon.mods.pixelguns.client.option.AdsSensitivity;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
+import com.ultreon.mods.pixelguns.registry.ConfigRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.item.ItemStack;
@@ -22,8 +22,8 @@ public class AdsSensitivityModifier {
         MinecraftClient client = MinecraftClient.getInstance();
         ItemStack gun = client.player.getStackInHand(Hand.MAIN_HAND);
         if (gun.getItem() instanceof GunItem && client.mouse.wasRightButtonClicked() && GunItem.isLoaded(gun)) {
-            args.set(0, deltaX * AdsSensitivity.getValue());
-            args.set(1, deltaY * AdsSensitivity.getValue());
+            args.set(0, deltaX * 2 * ConfigRegistry.ads_sensitivity);
+            args.set(1, deltaY * 2 * ConfigRegistry.ads_sensitivity);
         }
     }
 }
