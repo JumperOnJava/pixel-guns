@@ -1,13 +1,10 @@
 package com.ultreon.mods.pixelguns.registry;
 
 import com.ultreon.mods.pixelguns.client.handler.RecoilHandler;
-import com.ultreon.mods.pixelguns.event.GunFireEvent;
-import com.ultreon.mods.pixelguns.event.forge.Event;
-import com.ultreon.mods.pixelguns.event.forge.TickEvent;
+import com.ultreon.mods.pixelguns.event.GunEvents;
 
 public class EventHandlerRegistry {
 	public static void registerEventHandlers() {
-		Event.registerHandler(GunFireEvent.Post.class, RecoilHandler::onGunFire);
-		Event.registerHandler(TickEvent.RenderTickEvent.class, RecoilHandler::onRenderTick);
+		GunEvents.GUN_SHOT_POST.registerListener(RecoilHandler::onGunFire);
 	}
 }

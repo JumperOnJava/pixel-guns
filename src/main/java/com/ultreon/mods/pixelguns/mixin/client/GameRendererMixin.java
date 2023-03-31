@@ -1,13 +1,10 @@
 package com.ultreon.mods.pixelguns.mixin.client;
 
-import com.ultreon.mods.pixelguns.event.forge.Event;
-import com.ultreon.mods.pixelguns.event.forge.TickEvent;
-
+import com.ultreon.mods.pixelguns.client.handler.RecoilHandler;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.util.ZoomablePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
-
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -24,14 +21,9 @@ public class GameRendererMixin {
     @Final
     MinecraftClient client;
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void startRender(float tickDelta, long systemNanoTime, boolean shouldTick, CallbackInfo ci) {
-        Event.call(new TickEvent.RenderTickEvent(TickEvent.Phase.START, tickDelta));
-    }
-
     @Inject(method = "render", at = @At("RETURN"))
     private void endRender(float tickDelta, long systemNanoTime, boolean shouldTick, CallbackInfo ci) {
-        Event.call(new TickEvent.RenderTickEvent(TickEvent.Phase.END, tickDelta));
+        RecoilHandler.onRenderTick();
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)

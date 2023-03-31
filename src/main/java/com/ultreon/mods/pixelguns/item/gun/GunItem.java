@@ -3,8 +3,7 @@ package com.ultreon.mods.pixelguns.item.gun;
 import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.PixelGunsClient;
 import com.ultreon.mods.pixelguns.block.BottleBlock;
-import com.ultreon.mods.pixelguns.event.GunFireEvent;
-import com.ultreon.mods.pixelguns.event.forge.Event;
+import com.ultreon.mods.pixelguns.event.GunEvents;
 import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import com.ultreon.mods.pixelguns.util.InventoryUtil;
@@ -215,6 +214,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     }
 
     protected void handleHit(HitResult result, ServerWorld world, ServerPlayerEntity damageSource) {
+        GunEvents.GUN_HIT.invokeEvent(event -> event.onGunHit(result, world, damageSource));
+
         if (result instanceof EntityHitResult entityHitResult) {
             entityHitResult.getEntity().damage(DamageSource.player(damageSource), this.damage);
         }
@@ -235,10 +236,10 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     }
 
     public void shoot(PlayerEntity player, ItemStack stack) {
-        Event.call(new GunFireEvent.Pre(player, stack));
+        GunEvents.GUN_SHOT_PRE.invokeEvent(event -> event.onGunShotPre(player, stack));
 
         if (player.world.isClient) {
-            Event.call(new GunFireEvent.Post(player, stack));
+            GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
             return;
         }
 
@@ -255,7 +256,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         }
         this.playFireAudio(world, player);
 
-        Event.call(new GunFireEvent.Post(player, stack));
+        GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
     }
 
     public void playFireAudio(World world, PlayerEntity user) {
