@@ -3,6 +3,7 @@ package com.ultreon.mods.pixelguns.registry;
 import com.ultreon.mods.pixelguns.PixelGuns;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -39,7 +40,9 @@ public class ItemGroupRegistry {
             entries.add(ItemRegistry.ENERGY_BATTERY);
 
             entries.add(ItemRegistry.GRENADE);
-            entries.add(ItemRegistry.KATANA);
+            ItemStack katana = new ItemStack(ItemRegistry.KATANA);
+            katana.addEnchantment(Enchantments.SWEEPING, 3);
+            entries.add(katana);
             entries.add(ItemRegistry.CROWBAR);
         });
 
