@@ -148,10 +148,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         if (cooldownManager.isCoolingDown(stack.getItem())) {
             float cooldown = cooldownManager.getCooldownProgress(stack.getItem(), 0);
 
-            if (world.isClient) {
-                PixelGunsClient.addOrUpdateTrackedGuns(nbtCompound.getUuid("uuid"), cooldown);
-            }
-            else {
+            if (!world.isClient) {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeUuid(nbtCompound.getUuid("uuid"));
                 buf.writeFloat(cooldown);
@@ -161,6 +158,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
                         ServerPlayNetworking.send(serverPlayer, PacketRegistry.GUN_COOLDOWN, buf);
                     }
                 }
+
+                ServerPlayNetworking.send((ServerPlayerEntity) entity, PacketRegistry.GUN_COOLDOWN, buf);
             }
         }
     }
