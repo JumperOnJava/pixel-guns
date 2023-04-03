@@ -40,9 +40,9 @@ public abstract class AdsZoom extends PlayerEntity implements ZoomablePlayer {
                 }
                 isPlayerZoomed = true;
             }
-            else {
-                isPlayerZoomed = false;
-            }
+        }
+        else {
+            isPlayerZoomed = false;
         }
     }
 
