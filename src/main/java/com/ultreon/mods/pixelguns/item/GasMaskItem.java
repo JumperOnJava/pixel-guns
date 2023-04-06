@@ -39,27 +39,6 @@ public class GasMaskItem extends GeoArmor {
         return MathHelper.packRgb(114, 164, 161);
     }
 
-    @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if (entity instanceof ServerPlayerEntity player) {
-            List<Entity> entities = new ArrayList<>();
-            entities.addAll(world.getEntitiesByClass(AreaEffectCloudEntity.class, entity.getBoundingBox(), cloud -> true));
-            entities.addAll(world.getEntitiesByClass(PotionEntity.class, entity.getBoundingBox(), potion -> true));
-            entities.addAll(world.getEntitiesByClass(LlamaSpitEntity.class, entity.getBoundingBox(), spit -> true));
-
-            if (player.getInventory().armor.get(EquipmentSlot.HEAD.getEntitySlotId()) == stack && !player.isCreative() && !entities.isEmpty()) {
-                LivingEntityAccessor accessor = ((LivingEntityAccessor) player);
-                if (stack.getDamage() < stack.getMaxDamage()) {
-                    stack.damage(1, player.getRandom(), player);
-                    accessor.isAffectedBySplashPotions(false);
-                }
-                else {
-                    accessor.isAffectedBySplashPotions(true);
-                }
-            }
-        }
-    }
-
     /*
      * Animation Side
      */

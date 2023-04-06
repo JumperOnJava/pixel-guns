@@ -6,6 +6,7 @@
   "mixins": [
     "common.ExplosionMixin",
     "common.LivingEntityMixin",
+    "common.PlayerEntityMixin",
     "common.PlayerInventoryMixin"
   ],
   "client": [
