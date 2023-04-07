@@ -62,8 +62,8 @@ public class PixelGunsClient implements ClientModInitializer {
     }
 
     public static void addOrUpdateTrackedGuns(UUID uuid, float cooldown) {
-        if (PixelGunsClient.TRACKED_GUN_COOLDOWNS.replace(uuid, cooldown) == null) {
-            PixelGunsClient.TRACKED_GUN_COOLDOWNS.put(uuid, cooldown);
+        if (TRACKED_GUN_COOLDOWNS.replace(uuid, cooldown) == null) {
+            TRACKED_GUN_COOLDOWNS.put(uuid, cooldown);
         }
     }
 }
