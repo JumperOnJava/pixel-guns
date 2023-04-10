@@ -46,6 +46,5 @@
 
 	"pixel_guns.midnightconfig.title": "Pixel Guns Config",
 	"pixel_guns.midnightconfig.enable_recoil": "Enable Recoil",
-
-	"options.ads_sensitivity": "ADS Sensitivity"
+	"pixel_guns.midnightconfig.ads_sensitivity": "ADS Sensitivity"
 }
