@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public class ModelPredicateRegistry {
 
+    private static final Identifier AIMING = PixelGuns.id("aiming");
+
     public static void registerModelPredicates() {
         registerGunPredicate(ItemRegistry.PISTOL);
         registerGunPredicate(ItemRegistry.REVOLVER);
@@ -23,7 +25,7 @@ public class ModelPredicateRegistry {
         registerGunPredicate(ItemRegistry.COMBAT_SHOTGUN);
         registerGunPredicate(ItemRegistry.SNIPER_RIFLE);
 
-        ModelPredicateProviderRegistry.register(ItemRegistry.ROCKET_LAUNCHER, PixelGuns.id("aiming"), (stack, world, entity, seed) ->
+        ModelPredicateProviderRegistry.register(ItemRegistry.ROCKET_LAUNCHER, AIMING, (stack, world, entity, seed) ->
                 entity != null && MinecraftClient.getInstance().options.useKey.isPressed() && GunItem.isLoaded(stack) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ItemRegistry.POLICE_SHIELD, new Identifier("blocking"), (stack, world, entity, seed) ->
                 entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1 : 0);
@@ -59,7 +61,7 @@ public class ModelPredicateRegistry {
             }
             return 1.0f;
         });
-        ModelPredicateProviderRegistry.register(gun, PixelGuns.id("aiming"), (stack, world, entity, seed) -> {
+        ModelPredicateProviderRegistry.register(gun, AIMING, (stack, world, entity, seed) -> {
             if (entity != null && MinecraftClient.getInstance().options.useKey.isPressed() && GunItem.isLoaded(stack)) {
                 return 1.0f;
             }
