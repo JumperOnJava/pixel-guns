@@ -51,6 +51,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     public static final String TAG_IS_SCOPED = "isScoped";
     public static final String TAG_IS_RELOADING = "isReloading";
     public static final String TAG_UUID = "uuid";
+    public static final String TAG_IS_COOLING_DOWN = "isCoolingDown";
     
     public final boolean isAutomatic;
     protected final float damage;
@@ -110,6 +111,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         nbtCompound.putInt(TAG_CLIP, 0);
         nbtCompound.putBoolean(TAG_IS_SCOPED, this.isScoped);
         nbtCompound.putBoolean(TAG_IS_RELOADING, false);
+        nbtCompound.putBoolean(TAG_IS_COOLING_DOWN, false);
     }
 
     @Override
@@ -152,21 +154,25 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
             nbtCompound.putInt(TAG_RELOAD_TICK, 0);
         }
 
-        if (cooldownManager.isCoolingDown(stack.getItem())) {
-            float cooldown = cooldownManager.getCooldownProgress(stack.getItem(), 0);
+        if (!world.isClient) {
+            if (cooldownManager.isCoolingDown(stack.getItem()) && nbtCompound.getBoolean(TAG_IS_COOLING_DOWN)) {
+                float cooldown = cooldownManager.getCooldownProgress(stack.getItem(), 0);
 
-            if (!world.isClient) {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeUuid(nbtCompound.getUuid(TAG_UUID));
                 buf.writeFloat(cooldown);
 
-                for (ServerPlayerEntity serverPlayer : PlayerLookup.tracking(entity)) {
-                    if (!serverPlayer.getUuid().equals(entity.getUuid())) {
-                        ServerPlayNetworking.send(serverPlayer, PacketRegistry.GUN_COOLDOWN, buf);
+                for (ServerPlayerEntity trackingPlayer : PlayerLookup.tracking(entity)) {
+                    if (!trackingPlayer.getUuid().equals(entity.getUuid())) {
+                        ServerPlayNetworking.send(trackingPlayer, PacketRegistry.GUN_COOLDOWN, buf);
                     }
                 }
 
                 ServerPlayNetworking.send((ServerPlayerEntity) entity, PacketRegistry.GUN_COOLDOWN, buf);
+
+                if (cooldown == 0) {
+                    nbtCompound.putBoolean(TAG_IS_COOLING_DOWN, false);
+                }
             }
         }
     }
@@ -251,16 +257,19 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         ServerWorld world = serverPlayer.getWorld();
-        player.getItemCooldownManager().set(this, this.fireCooldown);
-        for (int i = 0; i < this.pelletCount; ++i) {
+
+        playFireAudio(world, player);
+        serverPlayer.getItemCooldownManager().set(this, fireCooldown);
+        stack.getOrCreateNbt().putBoolean(TAG_IS_COOLING_DOWN, true);
+
+        for (int i = 0; i < pelletCount; ++i) {
             // TODO bullet spread
-            this.handleHit(GunHitscanHelper.getCollision(player, this.range), world, serverPlayer);
+            handleHit(GunHitscanHelper.getCollision(player, range), world, serverPlayer);
         }
 
         if (!player.getAbilities().creativeMode) {
-            this.useAmmo(stack);
+            useAmmo(stack);
         }
-        this.playFireAudio(world, player);
 
         GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
     }
