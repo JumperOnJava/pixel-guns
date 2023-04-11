@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 public class WorkshopBlock extends EasyBlock {
 
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    private static final Text TITLE = Text.of("Workbench");
+    private static final Text TITLE = Text.translatable("container.pixel_guns.workshop");
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 15.0, 16.0);
 
     public WorkshopBlock() {

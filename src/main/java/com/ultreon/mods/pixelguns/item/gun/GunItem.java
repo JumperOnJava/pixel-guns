@@ -30,6 +30,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -116,9 +117,9 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        tooltip.add(Text.literal(Formatting.GRAY + "Ammo Type: " + Formatting.WHITE + this.ammunition.getName().getString()));
-        tooltip.add(Text.literal(Formatting.GRAY + "Damage: " + Formatting.WHITE + this.damage));
-        tooltip.add(Text.literal(Formatting.GRAY + "Ammo: " + Formatting.WHITE + GunItem.remainingAmmo(stack) + "/" + this.magazineSize));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.ammo_type").formatted(Formatting.GRAY).append(" ").append(ammunition.getName().copy().formatted(Formatting.WHITE)));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.damage").formatted(Formatting.GRAY).append(Text.literal(" " + damage).formatted(Formatting.WHITE)));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.ammo").formatted(Formatting.GRAY).append(Text.literal(" " + GunItem.remainingAmmo(stack) + "/" + magazineSize).formatted(Formatting.WHITE)));
     }
 
     @Override

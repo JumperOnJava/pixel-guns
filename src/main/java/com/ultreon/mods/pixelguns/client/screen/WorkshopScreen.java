@@ -95,19 +95,19 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
         this.addDrawableChild(new ButtonWidget(this.x + 9, this.y + 18, 15, 20, Text.literal("<"), button -> {
             recipes.get(currentTab).prev();
             this.materials = List.of(((WorkshopCraftable) this.getDisplayStack().getItem()).getIngredients());
-        }, a -> Text.literal("previous item")));
+        }, a -> Text.translatable("gui.pixel_guns.previous_item")));
 
         // Right Arrow
         this.addDrawableChild(new ButtonWidget(this.x + 153, this.y + 18, 15, 20, Text.literal(">"), button -> {
             recipes.get(currentTab).next();
             this.materials = List.of(((WorkshopCraftable) this.getDisplayStack().getItem()).getIngredients());
-        }, a -> Text.literal("next item")));
+        }, a -> Text.translatable("gui.pixel_guns.next_item")));
 
         // Assemble Button
-        this.btnCraft = this.addDrawableChild(new ButtonWidget(this.x + 195, this.y + 16, 74, 20, Text.literal("Assemble"), button -> {
+        this.btnCraft = this.addDrawableChild(new ButtonWidget(this.x + 195, this.y + 16, 74, 20, Text.translatable("gui.pixel_guns.assemble"), button -> {
             WorkshopCraftable currentItem = (WorkshopCraftable) this.getDisplayStack().getItem();
             WorkshopCraftC2SPacket.send(currentItem.getIngredients(), this.getDisplayStack());
-        }, a -> Text.literal("assemble item")));
+        }, a -> Text.translatable("gui.pixel_guns.assemble_item")));
 
         // Disable the Assemble Button
         this.btnCraft.active = false;

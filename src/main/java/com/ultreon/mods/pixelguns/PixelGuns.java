@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class PixelGuns implements ModInitializer {
 
     public static final String MOD_ID = "pixel_guns";
-    public static final Logger LOGGER = LoggerFactory.getLogger("pixel_guns");
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public void onInitialize() {
         EntityRegistry.init();
