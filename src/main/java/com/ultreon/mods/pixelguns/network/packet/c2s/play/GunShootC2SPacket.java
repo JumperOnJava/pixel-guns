@@ -20,8 +20,8 @@ public class GunShootC2SPacket implements ServerPlayNetworking.PlayChannelHandle
                 NbtCompound nbt = itemStack.getOrCreateNbt();
 
                 gunItem.shoot(player, itemStack);
-                nbt.putInt("reloadTick", 0);
-                nbt.putBoolean("isReloading", false);
+                nbt.putInt(GunItem.TAG_RELOAD_TICK, 0);
+                nbt.putBoolean(GunItem.TAG_IS_RELOADING, false);
             }
         }
     }

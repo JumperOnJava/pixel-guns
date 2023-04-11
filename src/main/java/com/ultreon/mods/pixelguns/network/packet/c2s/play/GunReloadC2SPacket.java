@@ -16,7 +16,7 @@ public class GunReloadC2SPacket implements ServerPlayNetworking.PlayChannelHandl
     public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
         if (stack.getItem() instanceof GunItem) {
-            stack.getOrCreateNbt().putBoolean("isReloading", buf.readBoolean());
+            stack.getOrCreateNbt().putBoolean(GunItem.TAG_IS_RELOADING, buf.readBoolean());
         }
     }
 }

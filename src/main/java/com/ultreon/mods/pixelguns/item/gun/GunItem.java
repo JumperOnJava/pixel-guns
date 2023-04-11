@@ -45,6 +45,13 @@ import java.util.UUID;
 
 public abstract class GunItem extends Item implements WorkshopCraftable {
 
+    public static final String TAG_RELOAD_TICK = "reloadTick";
+    public static final String TAG_CLIP = "Clip";
+    public static final String TAG_CURRENT_CYCLE = "currentCycle";
+    public static final String TAG_IS_SCOPED = "isScoped";
+    public static final String TAG_IS_RELOADING = "isReloading";
+    public static final String TAG_UUID = "uuid";
+    
     public final boolean isAutomatic;
     protected final float damage;
     protected final int range;
@@ -90,7 +97,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     public static int remainingAmmo(ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        return nbtCompound.getInt("Clip");
+        return nbtCompound.getInt(TAG_CLIP);
     }
 
     public static int reserveAmmoCount(PlayerEntity player, Item item) {
@@ -98,11 +105,11 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     }
 
     public void setDefaultNBT(NbtCompound nbtCompound) {
-        nbtCompound.putInt("reloadTick", 0);
-        nbtCompound.putInt("currentCycle", 1);
-        nbtCompound.putInt("Clip", 0);
-        nbtCompound.putBoolean("isScoped", this.isScoped);
-        nbtCompound.putBoolean("isReloading", false);
+        nbtCompound.putInt(TAG_RELOAD_TICK, 0);
+        nbtCompound.putInt(TAG_CURRENT_CYCLE, 1);
+        nbtCompound.putInt(TAG_CLIP, 0);
+        nbtCompound.putBoolean(TAG_IS_SCOPED, this.isScoped);
+        nbtCompound.putBoolean(TAG_IS_RELOADING, false);
     }
 
     @Override
@@ -117,32 +124,32 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
         ItemCooldownManager cooldownManager = ((PlayerEntity) entity).getItemCooldownManager();
 
-        if (!nbtCompound.contains("uuid")) {
-            nbtCompound.putUuid("uuid", UUID.randomUUID());
+        if (!nbtCompound.contains(TAG_UUID)) {
+            nbtCompound.putUuid(TAG_UUID, UUID.randomUUID());
         }
 
-        if (!(nbtCompound.contains("reloadTick") && nbtCompound.contains("Clip") && nbtCompound.contains("isScoped") && nbtCompound.contains("isReloading"))) {
+        if (!(nbtCompound.contains(TAG_RELOAD_TICK) && nbtCompound.contains(TAG_CLIP) && nbtCompound.contains(TAG_IS_SCOPED) && nbtCompound.contains(TAG_IS_RELOADING))) {
             this.setDefaultNBT(nbtCompound);
         }
 
-        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeyBindRegistry.RELOAD_KEY.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean("isReloading")) {
+        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeyBindRegistry.RELOAD_KEY.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean(TAG_IS_RELOADING)) {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeBoolean(true);
-            ClientPlayNetworking.send(PixelGuns.id("reload"), buf);
+            ClientPlayNetworking.send(PacketRegistry.GUN_RELOAD, buf);
         }
 
-        if (nbtCompound.getBoolean("isReloading") && (((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) != stack || GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) <= 0 && this.reloadCycles <= 1 || nbtCompound.getInt("reloadTick") >= this.reloadCooldown || GunItem.remainingAmmo(stack) >= this.magazineSize && this.reloadCycles <= 1)) {
-            nbtCompound.putBoolean("isReloading", false);
+        if (nbtCompound.getBoolean(TAG_IS_RELOADING) && (((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) != stack || GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) <= 0 && this.reloadCycles <= 1 || nbtCompound.getInt(TAG_RELOAD_TICK) >= this.reloadCooldown || GunItem.remainingAmmo(stack) >= this.magazineSize && this.reloadCycles <= 1)) {
+            nbtCompound.putBoolean(TAG_IS_RELOADING, false);
         }
 
-        if (nbtCompound.getBoolean("isReloading")) {
+        if (nbtCompound.getBoolean(TAG_IS_RELOADING)) {
             this.doReloadTick(world, nbtCompound, (PlayerEntity) entity, stack);
         }
         else {
-            if (nbtCompound.getInt("reloadTick") > this.reloadSoundStages[2] && nbtCompound.getInt("reloadTick") <= this.reloadCooldown) {
+            if (nbtCompound.getInt(TAG_RELOAD_TICK) > this.reloadSoundStages[2] && nbtCompound.getInt(TAG_RELOAD_TICK) <= this.reloadCooldown) {
                 this.finishReload((PlayerEntity) entity, stack);
             }
-            nbtCompound.putInt("reloadTick", 0);
+            nbtCompound.putInt(TAG_RELOAD_TICK, 0);
         }
 
         if (cooldownManager.isCoolingDown(stack.getItem())) {
@@ -150,7 +157,7 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
             if (!world.isClient) {
                 PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeUuid(nbtCompound.getUuid("uuid"));
+                buf.writeUuid(nbtCompound.getUuid(TAG_UUID));
                 buf.writeFloat(cooldown);
 
                 for (ServerPlayerEntity serverPlayer : PlayerLookup.tracking(entity)) {
@@ -165,8 +172,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     }
 
     protected void doReloadTick(World world, NbtCompound nbtCompound, PlayerEntity player, ItemStack stack) {
-        int reloadTick = nbtCompound.getInt("reloadTick");
-        nbtCompound.putInt("reloadTick", nbtCompound.getInt("reloadTick") + 1);
+        int reloadTick = nbtCompound.getInt(TAG_RELOAD_TICK);
+        nbtCompound.putInt(TAG_RELOAD_TICK, nbtCompound.getInt(TAG_RELOAD_TICK) + 1);
         if (!world.isClient()) {
             if (reloadTick == this.reloadSoundStages[0]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[0], SoundCategory.MASTER, 1.0f, 1.0f);
@@ -187,27 +194,27 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
                     break;
                 }
 
-                nbtCompound.putInt("currentCycle", 1);
+                nbtCompound.putInt(TAG_CURRENT_CYCLE, 1);
                 this.finishReload(player, stack);
-                nbtCompound.putInt("reloadTick", 0);
+                nbtCompound.putInt(TAG_RELOAD_TICK, 0);
             }
             case INDIVIDUAL -> {
                 if (reloadTick < this.reloadSoundStages[2]) {
                     break;
                 }
-                if (nbtCompound.getInt("currentCycle") >= this.reloadCycles) {
+                if (nbtCompound.getInt(TAG_CURRENT_CYCLE) >= this.reloadCycles) {
                     break;
                 }
                 if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) {
                     break;
                 }
 
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + 1);
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + 1);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, 1);
                 if (GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount(player, this.ammunition) > 0) {
-                    nbtCompound.putInt("reloadTick", this.reloadSoundStages[1]);
+                    nbtCompound.putInt(TAG_RELOAD_TICK, this.reloadSoundStages[1]);
                 }
-                nbtCompound.putInt("currentCycle", nbtCompound.getInt("Clip"));
+                nbtCompound.putInt(TAG_CURRENT_CYCLE, nbtCompound.getInt(TAG_CLIP));
             }
         }
     }
@@ -268,29 +275,29 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     protected void useAmmo(ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") - 1);
+        nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) - 1);
     }
 
     public void finishReload(PlayerEntity player, ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        if (nbtCompound.getInt("Clip") <= 0) {
+        if (nbtCompound.getInt(TAG_CLIP) <= 0) {
             if (GunItem.reserveAmmoCount(player, this.ammunition) > this.magazineSize) {
-                nbtCompound.putInt("Clip", this.magazineSize);
+                nbtCompound.putInt(TAG_CLIP, this.magazineSize);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, this.magazineSize);
             }
             else {
-                nbtCompound.putInt("Clip", GunItem.reserveAmmoCount(player, this.ammunition));
+                nbtCompound.putInt(TAG_CLIP, GunItem.reserveAmmoCount(player, this.ammunition));
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
         }
         else {
-            int ammoToLoad = this.magazineSize - nbtCompound.getInt("Clip");
+            int ammoToLoad = this.magazineSize - nbtCompound.getInt(TAG_CLIP);
             if (GunItem.reserveAmmoCount(player, this.ammunition) >= ammoToLoad) {
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + ammoToLoad);
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + ammoToLoad);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, ammoToLoad);
             }
             else {
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + GunItem.reserveAmmoCount(player, this.ammunition));
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + GunItem.reserveAmmoCount(player, this.ammunition));
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
         }

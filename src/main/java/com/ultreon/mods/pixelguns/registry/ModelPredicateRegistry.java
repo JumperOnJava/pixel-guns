@@ -33,8 +33,8 @@ public class ModelPredicateRegistry {
         ModelPredicateProviderRegistry.register(gun, PixelGuns.id("cooldown_tick"), (stack, world, entity, seed) -> {
             if (entity != null) {
                 NbtCompound nbt = stack.getOrCreateNbt();
-                if (nbt.contains("uuid")) {
-                    UUID uuid = nbt.getUuid("uuid");
+                if (nbt.contains(GunItem.TAG_UUID)) {
+                    UUID uuid = nbt.getUuid(GunItem.TAG_UUID);
                     if (PixelGunsClient.TRACKED_GUN_COOLDOWNS.containsKey(uuid)) {
                         float cooldown = PixelGunsClient.TRACKED_GUN_COOLDOWNS.get(uuid);
                         if (cooldown <= 0.25f) {
@@ -48,13 +48,13 @@ public class ModelPredicateRegistry {
         });
 
         ModelPredicateProviderRegistry.register(gun, PixelGuns.id("load_tick"), (stack, world, entity, seed) -> {
-            if (entity == null || !stack.getOrCreateNbt().getBoolean("isReloading")) {
+            if (entity == null || !stack.getOrCreateNbt().getBoolean(GunItem.TAG_IS_RELOADING)) {
                 return 0.0f;
             }
-            return stack.getOrCreateNbt().getInt("reloadTick") / 200.0f;
+            return stack.getOrCreateNbt().getInt(GunItem.TAG_RELOAD_TICK) / 200.0f;
         });
         ModelPredicateProviderRegistry.register(gun, PixelGuns.id("loading"), (stack, world, entity, seed) -> {
-            if (entity == null || !stack.getOrCreateNbt().getBoolean("isReloading")) {
+            if (entity == null || !stack.getOrCreateNbt().getBoolean(GunItem.TAG_IS_RELOADING)) {
                 return 0.0f;
             }
             return 1.0f;

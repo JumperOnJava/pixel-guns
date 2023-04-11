@@ -26,7 +26,7 @@ public class PlayerGunPose {
     @Inject(method = "getArmPose", at = @At("TAIL"), cancellable = true)
     private static void gunPose(AbstractClientPlayerEntity player, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> ci) {
         if (player.getStackInHand(hand).getItem() instanceof GunItem) {
-            if (player.getStackInHand(hand).getOrCreateNbt().getInt("reloadTick") > 0) {
+            if (player.getStackInHand(hand).getOrCreateNbt().getInt(GunItem.TAG_RELOAD_TICK) > 0) {
                 ci.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_CHARGE);
             }
             else if (GunItem.isLoaded(player.getStackInHand(hand))) {

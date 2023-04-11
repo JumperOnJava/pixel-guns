@@ -23,7 +23,7 @@ public class ScopedSensitivity {
         ItemStack gun = client.player.getStackInHand(Hand.MAIN_HAND);
         if (gun.getItem() instanceof GunItem && client.mouse.wasRightButtonClicked() && GunItem.isLoaded(gun)) {
             NbtCompound nbtCompound = gun.getOrCreateNbt();
-            if (nbtCompound.getBoolean("isScoped")) {
+            if (nbtCompound.getBoolean(GunItem.TAG_IS_SCOPED)) {
                 args.set(0, a0 * 0.2);
                 args.set(1, a1 * 0.2);
             }

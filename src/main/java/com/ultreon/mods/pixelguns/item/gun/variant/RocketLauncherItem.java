@@ -93,7 +93,7 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
     @Override
     protected void doReloadTick(World world, NbtCompound nbtCompound, PlayerEntity player, ItemStack stack) {
-        int reloadTick = nbtCompound.getInt("reloadTick");
+        int reloadTick = nbtCompound.getInt(GunItem.TAG_RELOAD_TICK);
         if (reloadTick == 0 && world instanceof ServerWorld serverWorld) {
             this.triggerAnim(player, GeoItem.getOrAssignId(player.getMainHandStack(), serverWorld), "controller", "reload");
         }

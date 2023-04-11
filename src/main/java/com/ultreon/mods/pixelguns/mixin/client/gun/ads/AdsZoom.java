@@ -32,7 +32,7 @@ public abstract class AdsZoom extends PlayerEntity implements ZoomablePlayer {
             ItemStack stack = getStackInHand(Hand.MAIN_HAND);
             if (stack.getItem() instanceof GunItem && GunItem.isLoaded(stack)) {
                 NbtCompound nbt = stack.getOrCreateNbt();
-                if (nbt.getBoolean("isScoped")) {
+                if (nbt.getBoolean(GunItem.TAG_IS_SCOPED)) {
                     cir.setReturnValue(0.2f);
                 }
                 else {
