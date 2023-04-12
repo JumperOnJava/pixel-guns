@@ -52,9 +52,14 @@ public class GeoArmor extends ArmorItem implements GeoItem {
 
     protected class ArmorRenderProvider implements RenderProvider {
 
+        private GeoArmorRenderer<?> renderer;
+
+        @SuppressWarnings("unchecked")
         @Override
         public BipedEntityModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, BipedEntityModel<LivingEntity> original) {
-            GeoArmorRenderer<GeoArmor> renderer = GeoRendererGenerator.armor(GeoArmor.this);
+            if (renderer == null) {
+                renderer = GeoRendererGenerator.armor(GeoArmor.this);
+            }
 
             renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
             return renderer;
