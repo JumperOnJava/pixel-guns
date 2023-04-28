@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.mixin.client.gun.ads;
 
 import com.mojang.authlib.GameProfile;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.util.ZoomablePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -30,7 +31,7 @@ public abstract class AdsZoom extends PlayerEntity implements ZoomablePlayer {
     private void getFovMultiplier(CallbackInfoReturnable<Float> cir) {
         if (MinecraftClient.getInstance().options.useKey.isPressed()) {
             ItemStack stack = getStackInHand(Hand.MAIN_HAND);
-            if (stack.getItem() instanceof GunItem && GunItem.isLoaded(stack)) {
+            if (stack.getItem() instanceof GunItem && GunItem.isLoaded(stack) && !getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
                 NbtCompound nbt = stack.getOrCreateNbt();
                 if (nbt.getBoolean(GunItem.TAG_IS_SCOPED)) {
                     cir.setReturnValue(0.2f);

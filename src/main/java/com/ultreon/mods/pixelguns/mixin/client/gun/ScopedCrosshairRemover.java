@@ -7,6 +7,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +21,7 @@ public class ScopedCrosshairRemover {
         PlayerEntity player = MinecraftClient.getInstance().player;
         assert player != null;
         ItemStack stack = player.getMainHandStack();
-        if (stack.getItem() instanceof GunItem gunItem) {
+        if (stack.getItem() instanceof GunItem gunItem && !player.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
             if (GunItem.isLoaded(stack) && MinecraftClient.getInstance().options.useKey.isPressed() && gunItem != ItemRegistry.SNIPER_RIFLE) {
                 info.cancel();
             }

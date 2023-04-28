@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.mixin.client.gun;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.item.gun.variant.InfinityGunItem;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -29,7 +30,7 @@ public class PlayerGunPose {
             if (player.getStackInHand(hand).getOrCreateNbt().getInt(GunItem.TAG_RELOAD_TICK) > 0) {
                 ci.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_CHARGE);
             }
-            else if (GunItem.isLoaded(player.getStackInHand(hand))) {
+            else if (GunItem.isLoaded(player.getStackInHand(hand)) && !player.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
                 ci.setReturnValue(BipedEntityModel.ArmPose.BOW_AND_ARROW);
             }
             return;
