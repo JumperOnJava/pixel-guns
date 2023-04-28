@@ -1,13 +1,10 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
-import com.ultreon.mods.pixelguns.PixelGuns;
-import com.ultreon.mods.pixelguns.PixelGunsClient;
 import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.event.GunEvents;
 import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import com.ultreon.mods.pixelguns.util.InventoryUtil;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -30,7 +27,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -44,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class GunItem extends Item implements WorkshopCraftable {
+public abstract class GunItem extends Item {
 
     public static final String TAG_RELOAD_TICK = "reloadTick";
     public static final String TAG_CLIP = "Clip";
@@ -70,9 +66,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     protected final SoundEvent fireAudio;
     private final int reloadCycles;
     public final boolean isScoped;
-    private final ItemStack[] craftingRequirements;
 
-    public GunItem(boolean isAutomatic, float damage, int range, int fireCooldown, int magazineSize, Item ammunition, int reloadCooldown, float bulletSpread, float recoil, int pelletCount, LoadingType loadingType, SoundEvent[] reloadSounds, SoundEvent fireAudio, int reloadCycles, boolean isScoped, int[] reloadStages, ItemStack[] craftingRequirements) {
+    public GunItem(boolean isAutomatic, float damage, int range, int fireCooldown, int magazineSize, Item ammunition, int reloadCooldown, float bulletSpread, float recoil, int pelletCount, LoadingType loadingType, SoundEvent[] reloadSounds, SoundEvent fireAudio, int reloadCycles, boolean isScoped, int[] reloadStages) {
         super(new FabricItemSettings().maxCount(1));
         this.isAutomatic = isAutomatic;
         this.damage = damage;
@@ -90,7 +85,6 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         this.reloadCycles = reloadCycles;
         this.isScoped = isScoped;
         this.reloadSoundStages = reloadStages;
-        this.craftingRequirements = craftingRequirements;
     }
 
     public static boolean isLoaded(ItemStack stack) {
@@ -311,11 +305,6 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
         }
-    }
-
-    @Override
-    public ItemStack[] getIngredients() {
-        return craftingRequirements;
     }
 
     @Override

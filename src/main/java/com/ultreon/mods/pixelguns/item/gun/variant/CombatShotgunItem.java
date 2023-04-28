@@ -25,11 +25,7 @@ public class CombatShotgunItem extends GunItem {
                 SoundRegistry.COMBAT_SHOTGUN_FIRE,
                 6,
                 false,
-                new int[]{1, 4, 13},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 30),
-                        new ItemStack(Items.IRON_NUGGET, 15)
-                }
+                new int[]{1, 4, 13}
         );
     }
 }

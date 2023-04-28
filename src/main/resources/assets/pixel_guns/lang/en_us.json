@@ -44,6 +44,9 @@
 	"block.pixel_guns.orange_bottle": "Orange Bottle",
 
 	"container.pixel_guns.workshop": "Workshop",
+	"container.pixel_guns.workshop.pixel_guns.guns": "Guns",
+	"container.pixel_guns.workshop.pixel_guns.ammunition": "Ammunition",
+	"container.pixel_guns.workshop.pixel_guns.attachments": "Attachments",
 
 	"gui.pixel_guns.previous_item": "Previous Item",
 	"gui.pixel_guns.next_item": "Next Item",

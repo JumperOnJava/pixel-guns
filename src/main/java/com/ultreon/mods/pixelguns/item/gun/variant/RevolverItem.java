@@ -25,11 +25,7 @@ public class RevolverItem extends GunItem {
                 SoundRegistry.REVOLVER_FIRE,
                 1,
                 false,
-                new int[]{1, 26, 34},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 35),
-                        new ItemStack(Items.IRON_NUGGET, 20)
-                }
+                new int[]{1, 26, 34}
         );
     }
 }

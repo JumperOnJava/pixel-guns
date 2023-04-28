@@ -25,11 +25,7 @@ public class SubmachineGunItem extends GunItem {
                 SoundRegistry.SUBMACHINE_GUN_FIRE,
                 1,
                 false,
-                new int[]{5, 17, 30},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 40),
-                        new ItemStack(Items.IRON_NUGGET, 10)
-                }
+                new int[]{5, 17, 30}
         );
     }
 }

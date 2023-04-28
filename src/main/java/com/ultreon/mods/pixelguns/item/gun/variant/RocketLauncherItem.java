@@ -47,11 +47,7 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
                 SoundRegistry.ROCKET_LAUNCHER_FIRE,
                 1,
                 false,
-                new int[]{1, 8, 17},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 55),
-                        new ItemStack(Items.IRON_NUGGET, 10)
-                }
+                new int[]{1, 8, 17}
         );
 
         SingletonGeoAnimatable.registerSyncedAnimatable(this);

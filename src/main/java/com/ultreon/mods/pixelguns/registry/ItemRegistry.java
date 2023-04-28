@@ -1,13 +1,10 @@
 package com.ultreon.mods.pixelguns.registry;
 
 import com.ultreon.mods.pixelguns.PixelGuns;
-import com.ultreon.mods.pixelguns.item.GeoArmor;
-import com.ultreon.mods.pixelguns.item.CrowbarItem;
-import com.ultreon.mods.pixelguns.item.GasMaskItem;
-import com.ultreon.mods.pixelguns.item.GrenadeItem;
-import com.ultreon.mods.pixelguns.item.KatanaItem;
-import com.ultreon.mods.pixelguns.item.ammo.variant.*;
-import com.ultreon.mods.pixelguns.item.attachment.*;
+import com.ultreon.mods.pixelguns.item.*;
+import com.ultreon.mods.pixelguns.item.ammo.BulletItem;
+import com.ultreon.mods.pixelguns.item.ammo.variant.EnergyBatteryItem;
+import com.ultreon.mods.pixelguns.item.ammo.variant.RocketItem;
 import com.ultreon.mods.pixelguns.item.gun.variant.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
@@ -21,10 +18,10 @@ import net.minecraft.util.Identifier;
 public class ItemRegistry {
 
     // Ammunition
-    public static final Item SHOTGUN_SHELL = ItemRegistry.register("shotgun_shell", new ShotgunShellItem());
-    public static final Item LIGHT_BULLETS = ItemRegistry.register("light_bullets", new LightBulletsItem());
-    public static final Item MEDIUM_BULLETS = ItemRegistry.register("medium_bullets", new MediumBulletsItem());
-    public static final Item HEAVY_BULLETS = ItemRegistry.register("heavy_bullets", new HeavyBulletsItem());
+    public static final Item SHOTGUN_SHELL = ItemRegistry.register("shotgun_shell", new BulletItem(new Item.Settings()));
+    public static final Item LIGHT_BULLETS = ItemRegistry.register("light_bullets", new BulletItem(new Item.Settings()));
+    public static final Item MEDIUM_BULLETS = ItemRegistry.register("medium_bullets", new BulletItem(new Item.Settings()));
+    public static final Item HEAVY_BULLETS = ItemRegistry.register("heavy_bullets", new BulletItem(new Item.Settings()));
     public static final Item ROCKET = ItemRegistry.register("rocket", new RocketItem());
     public static final Item ENERGY_BATTERY = ItemRegistry.register("energy_battery", new EnergyBatteryItem());
 
@@ -49,11 +46,11 @@ public class ItemRegistry {
     public static final Item GRENADE = ItemRegistry.register("grenade", new GrenadeItem());
 
     // Attachments
-    public static final Item SHORT_SCOPE = ItemRegistry.register("short_scope", new ShortScopeItem());
-    public static final Item MEDIUM_SCOPE = ItemRegistry.register("medium_scope", new MediumScopeItem());
-    public static final Item LONG_SCOPE = ItemRegistry.register("long_scope", new LongScopeItem());
-    public static final Item HEAVY_STOCK = ItemRegistry.register("heavy_stock", new HeavyStockItem());
-    public static final Item SPECIALISED_GRIP = ItemRegistry.register("specialised_grip", new SpecialisedGripItem());
+    public static final Item SHORT_SCOPE = ItemRegistry.register("short_scope", new Item(new Item.Settings()));
+    public static final Item MEDIUM_SCOPE = ItemRegistry.register("medium_scope", new Item(new Item.Settings()));
+    public static final Item LONG_SCOPE = ItemRegistry.register("long_scope", new Item(new Item.Settings()));
+    public static final Item HEAVY_STOCK = ItemRegistry.register("heavy_stock", new Item(new Item.Settings()));
+    public static final Item SPECIALISED_GRIP = ItemRegistry.register("specialised_grip", new Item(new Item.Settings()));
 
     // Block Items
     public static final Item WORKSHOP = ItemRegistry.register(BlockRegistry.WORKSHOP);

@@ -25,11 +25,7 @@ public class LightAssaultRifleItem extends GunItem {
                 SoundRegistry.LIGHT_ASSAULT_RIFLE_FIRE,
                 1,
                 false,
-                new int[]{6, 18, 37},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 38),
-                        new ItemStack(Items.IRON_NUGGET, 12)
-                }
+                new int[]{6, 18, 37}
         );
     }
 }

@@ -6,13 +6,11 @@ import com.ultreon.mods.pixelguns.item.gun.GunHitscanHelper;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -36,7 +34,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftable {
+public class InfinityGunItem extends GunItem implements GeoItem {
 
     public InfinityGunItem() {
         super(
@@ -55,10 +53,7 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
                 SoundRegistry.INFINITY_GUN_FIRE,
                 1,
                 false,
-                new int[]{5, -1, -1},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 48)
-                }
+                new int[]{5, -1, -1}
         );
     }
 
@@ -118,14 +113,6 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
         public static final String INFINITY_GUN = "PixelGunsInfinityGun";
         public static final String SHOOT_TICKS = "shootTicks";
         public static final String IS_SHOOTING = "isShooting";
-    }
-
-    @Override
-    public ItemStack[] getIngredients() {
-        return new ItemStack[]{
-                new ItemStack(Items.IRON_INGOT, 64),
-                new ItemStack(Items.NETHER_STAR, 1)
-        };
     }
 
     /*

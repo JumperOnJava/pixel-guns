@@ -25,12 +25,7 @@ public class SniperRifleItem extends GunItem {
                 SoundRegistry.SNIPER_RIFLE_FIRE,
                 5,
                 true,
-                new int[]{1, 8, 17},
-                new ItemStack[]{
-                        new ItemStack(Items.IRON_INGOT, 45),
-                        new ItemStack(Items.OAK_PLANKS, 5),
-                        new ItemStack(Items.IRON_INGOT, 5)
-                }
+                new int[]{1, 8, 17}
         );
     }
 }
