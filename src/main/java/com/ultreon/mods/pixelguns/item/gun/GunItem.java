@@ -97,7 +97,12 @@ public abstract class GunItem extends Item {
     }
 
     public static int reserveAmmoCount(PlayerEntity player, Item item) {
-        return InventoryUtil.itemCountInInventory(player, item);
+        if (player.isCreative()) {
+            return item.getMaxCount();
+        }
+        else {
+            return InventoryUtil.itemCountInInventory(player, item);
+        }
     }
 
     public void setDefaultNBT(NbtCompound nbtCompound) {
