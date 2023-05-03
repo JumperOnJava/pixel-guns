@@ -58,7 +58,7 @@ public class ItemRegistry {
     public static final Item LEMON_BOTTLE = ItemRegistry.register(BlockRegistry.LEMON_BOTTLE);
     public static final Item ORANGE_BOTTLE = ItemRegistry.register(BlockRegistry.ORANGE_BOTTLE);
 
-    public static final Item POLICE_SHIELD = ItemRegistry.register("police_shield", new ShieldItem(new Item.Settings().maxCount(800)));
+    public static final Item POLICE_SHIELD = ItemRegistry.register("police_shield", new ShieldItem(new Item.Settings().maxDamage(800)));
 
     public static void init() {}
 
