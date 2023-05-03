@@ -3,6 +3,7 @@ package com.ultreon.mods.pixelguns.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.client.screen.handler.WorkshopScreenHandler;
+import com.ultreon.mods.pixelguns.item.recipe.WorkshopRecipe;
 import com.ultreon.mods.pixelguns.registry.WorkshopTabsRegistry;
 import com.ultreon.mods.pixelguns.util.RenderUtil;
 import net.minecraft.client.MinecraftClient;
@@ -37,13 +38,15 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
     private static final Identifier TEXTURE = PixelGuns.id("textures/gui/container/workshop.png");
 
     private float tick;
-    private final List<WorkshopTabsRegistry.WorkshopTab> tabs;
+    private final List<WorkshopTabsRegistry.WorkshopTab> tabs = WorkshopTabsRegistry.TABS.values().stream().toList();
+    private int buttonId = 0;
+    private ItemStack resultStack = ItemStack.EMPTY;
+    private WorkshopRecipe currentRecipe = null;
 
     public WorkshopScreen(WorkshopScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         playerInventoryTitleX = x + 8;
         playerInventoryTitleY = y + 91;
-        tabs = handler.getTabs();
     }
 
     @Override
@@ -94,8 +97,8 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
 
     private void renderMissingIngredients(MatrixStack matrices) {
         List<Slot> ingredientSlots = handler.getIngredientSlots();
-        if (handler.getCurrentRecipe() != null) {
-            List<Pair<Ingredient, Integer>> ingredients = handler.getCurrentRecipe().getIngredientPairs();
+        if (currentRecipe != null) {
+            List<Pair<Ingredient, Integer>> ingredients = currentRecipe.getIngredientPairs();
 
             for (int i = 0; i < ingredients.size(); i++) {
                 Slot ingredientSlot = ingredientSlots.get(i);
@@ -167,12 +170,7 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
     }
 
     private void render3DResultItem(MatrixStack matrices) {
-        if (handler.getCurrentRecipe() == null) {
-            return;
-        }
-
         float partialTicks = MinecraftClient.getInstance().getTickDelta();
-        ItemStack resultStack = handler.getCurrentRecipe().getOutput().copy();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         RenderUtil.scissor(x + 8, y + 17, 70, 70);
@@ -199,7 +197,8 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             for (WorkshopTabsRegistry.WorkshopTab tab : tabs) {
-                if (RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, x + 28 * tabs.indexOf(tab), y - 28, 28, 28)) {
+                int tabId = tabs.indexOf(tab) + buttonId;
+                if (RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, x + 28 * tabId, y - 28, 28, 28)) {
                     if (handler.getCurrentTab() != tab) {
                         handler.setCurrentTab(tab);
                         client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1));
@@ -209,5 +208,10 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public void updateRecipe(WorkshopRecipe recipe) {
+        currentRecipe = recipe;
+        resultStack = recipe.getOutput();
     }
 }

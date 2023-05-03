@@ -20,6 +20,9 @@ public class WorkshopChangeTabC2SPacket implements ServerPlayNetworking.PlayChan
                 if (WorkshopTabsRegistry.TABS.containsKey(tabId)) {
                     screenHandler.setCurrentTab(WorkshopTabsRegistry.TABS.get(tabId));
                 }
+                else {
+                    throw new IllegalStateException("Unknown workshop tab: " + tabId);
+                }
             }
         });
     }

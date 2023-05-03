@@ -7,6 +7,7 @@ import com.ultreon.mods.pixelguns.network.packet.c2s.play.WorkshopChangeTabC2SPa
 import com.ultreon.mods.pixelguns.network.packet.c2s.play.WorkshopUpdateRecipeC2SPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GrenadeExplodeS2CPacket;
 import com.ultreon.mods.pixelguns.network.packet.s2c.play.GunCooldownS2CPacket;
+import com.ultreon.mods.pixelguns.network.packet.s2c.play.WorkshopUpdateRecipeS2CPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
@@ -24,6 +25,7 @@ public class PacketRegistry {
         public static void registerPackets() {
             PacketRegistry.CLIENT.registerPacket(GUN_COOLDOWN, new GunCooldownS2CPacket());
             PacketRegistry.CLIENT.registerPacket(GRENADE_EXPLODE, new GrenadeExplodeS2CPacket());
+            PacketRegistry.CLIENT.registerPacket(WORKSHOP_UPDATE_RECIPE, new WorkshopUpdateRecipeS2CPacket());
         }
 
         private static void registerPacket(Identifier id, ClientPlayNetworking.PlayChannelHandler packetHandler) {
