@@ -2,6 +2,7 @@ package com.ultreon.mods.pixelguns.item.recipe;
 
 import com.ultreon.mods.pixelguns.registry.RecipeRegistry;
 import com.ultreon.mods.pixelguns.registry.WorkshopTabsRegistry;
+import com.ultreon.mods.pixelguns.util.RecipeMatcher;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
@@ -12,7 +13,6 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class WorkshopRecipe implements Recipe<Inventory> {
 
@@ -30,21 +30,19 @@ public class WorkshopRecipe implements Recipe<Inventory> {
 
     @Override
     public boolean matches(Inventory inventory, World world) {
-        RecipeMatcher matcher = new RecipeMatcher();
+        List<ItemStack> inputs = new ArrayList<>();
         int stackCount = 0;
 
         for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
-            for (Pair<Ingredient, Integer> pair : ingredients) {
-                if (!stack.isEmpty() && pair.getLeft().test(stack)) {
-                    if (stack.getCount() >= pair.getRight()) {
-                        stackCount++;
-                    }
+            if (i != 4) {
+                ItemStack stack = inventory.getStack(i);
+                if (!stack.isEmpty()) {
+                    stackCount++;
+                    inputs.add(stack);
                 }
             }
         }
-
-        return stackCount == ingredients.size() && matcher.match(this, null);
+        return stackCount == ingredients.size() && RecipeMatcher.findMatches(inputs, ingredients) != null;
     }
 
     @Override
