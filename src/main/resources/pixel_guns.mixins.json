@@ -17,7 +17,7 @@
     "client.gun.AnimationPrevention",
     "client.gun.GunKeybinds",
     "client.gun.PlayerGunPose",
-    "client.gun.ScopedCrosshairRemover",
+    "client.gun.CrosshairMixin",
     "client.gun.ads.AdsSensitivityModifier",
     "client.gun.ads.AdsZoom"
   ],

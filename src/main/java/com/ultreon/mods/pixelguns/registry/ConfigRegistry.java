@@ -11,6 +11,9 @@ public class ConfigRegistry extends MidnightConfig {
     @Entry(min = 0, max = 1)
     public static double ads_sensitivity = 0.5F;
 
+    @Entry(min = 0, max = 100)
+    public static int hit_crosshair_ticks = 10;
+
     public static void registerConfig() {
         init(PixelGuns.MOD_ID, ConfigRegistry.class);
     }

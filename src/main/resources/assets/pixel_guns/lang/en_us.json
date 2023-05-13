@@ -57,5 +57,6 @@
 
 	"pixel_guns.midnightconfig.title": "Pixel Guns Config",
 	"pixel_guns.midnightconfig.enable_recoil": "Enable Recoil",
-	"pixel_guns.midnightconfig.ads_sensitivity": "ADS Sensitivity"
+	"pixel_guns.midnightconfig.ads_sensitivity": "ADS Sensitivity",
+	"pixel_guns.midnightconfig.hit_crosshair_ticks": "How long (in ticks) the custom entity shot crosshair shows"
 }

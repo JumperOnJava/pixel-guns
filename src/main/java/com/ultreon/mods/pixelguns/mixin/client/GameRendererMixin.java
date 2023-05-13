@@ -1,5 +1,6 @@
 package com.ultreon.mods.pixelguns.mixin.client;
 
+import com.ultreon.mods.pixelguns.client.handler.CrosshairHandler;
 import com.ultreon.mods.pixelguns.client.handler.RecoilHandler;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.util.ZoomablePlayer;
@@ -24,6 +25,7 @@ public class GameRendererMixin {
     @Inject(method = "render", at = @At("RETURN"))
     private void endRender(float tickDelta, long systemNanoTime, boolean shouldTick, CallbackInfo ci) {
         RecoilHandler.onRenderTick();
+        CrosshairHandler.onRenderTick();
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
