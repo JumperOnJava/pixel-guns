@@ -11,9 +11,11 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ButtonBlock;
+import net.minecraft.block.TargetBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -31,6 +33,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.stat.Stats;
 import net.minecraft.state.State;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -251,6 +254,11 @@ public abstract class GunItem extends Item {
 
             if (block instanceof ButtonBlock buttonBlock) {
                 buttonBlock.onUse(state, world, pos, damageSource, Hand.MAIN_HAND, blockHitResult);
+            }
+
+            if (block instanceof TargetBlock targetBlock) {
+                TargetBlock.trigger(world, state, blockHitResult, null);
+                damageSource.incrementStat(Stats.TARGET_HIT);
             }
 
             ParticleEffect particleEffect = new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(pos));
