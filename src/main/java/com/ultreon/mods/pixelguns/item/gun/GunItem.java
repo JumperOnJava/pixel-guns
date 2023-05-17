@@ -1,9 +1,9 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
-import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.event.GunEvents;
 import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
+import com.ultreon.mods.pixelguns.registry.TagRegistry;
 import com.ultreon.mods.pixelguns.util.InventoryUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ButtonBlock;
@@ -21,7 +20,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.ItemCooldownManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -34,7 +32,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.Stats;
-import net.minecraft.state.State;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -248,7 +245,7 @@ public abstract class GunItem extends Item {
                 return;
             }
 
-            if (block instanceof BottleBlock bottleBlock) {
+            if (state.isIn(TagRegistry.BULLET_DESTROYS)) {
                 world.breakBlock(pos, false);
             }
 

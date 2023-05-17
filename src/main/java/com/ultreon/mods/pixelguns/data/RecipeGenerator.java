@@ -21,6 +21,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
         super(output);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void generate(Consumer<RecipeJsonProvider> exporter) {
         // Guns
