@@ -45,6 +45,7 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
 
     public WorkshopScreen(WorkshopScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
+        this.backgroundHeight+=18;
         playerInventoryTitleX = x + 8;
         playerInventoryTitleY = y + 91;
     }
@@ -88,7 +89,7 @@ public class WorkshopScreen extends HandledScreen<WorkshopScreenHandler> {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight + 18);
+        drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);
 
         renderSelectedTab(matrices);
         render3DResultItem(matrices);
