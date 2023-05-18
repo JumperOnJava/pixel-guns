@@ -17,23 +17,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public abstract class AmmoHud {
 
-    @Shadow @Final private MinecraftClient client;
-    @Shadow private int scaledWidth;
-    @Shadow protected abstract PlayerEntity getCameraPlayer();
-    @Shadow public abstract TextRenderer getTextRenderer();
+    @Shadow
+    @Final
+    private MinecraftClient client;
+    @Shadow
+    private int scaledWidth;
+
+    @Shadow
+    protected abstract PlayerEntity getCameraPlayer();
+
+    @Shadow
+    public abstract TextRenderer getTextRenderer();
+
+    @Shadow private int scaledHeight;
 
     @Inject(method = "render", at = @At("TAIL"))
     public void renderAmmoHud(MatrixStack matrixStack, float f, CallbackInfo ci) {
-        if (!this.client.options.hudHidden) {
-            PlayerEntity player = this.getCameraPlayer();
-            if (player == null) return;
+        if (!client.options.hudHidden) {
+            PlayerEntity player = getCameraPlayer();
+            if (player == null) {
+                return;
+            }
 
             ItemStack heldItem = player.getMainHandStack();
             if (heldItem.getItem() instanceof GunItem) {
-                TextRenderer textRenderer = this.getTextRenderer();
-                String text = String.format("%s/%s", GunItem.remainingAmmo(heldItem), GunItem.reserveAmmoCount(player, ((GunItem) heldItem.getItem()).ammunition));
-                int textWidth = textRenderer.getWidth(text);
-                textRenderer.drawWithShadow(matrixStack, text, this.scaledWidth - textWidth - 5, 5, 0xFFFFFF);
+                TextRenderer textRenderer = getTextRenderer();
+                String text = String.format("%s/%s", GunItem.remainingAmmo(heldItem), player.isCreative() ? "∞" : GunItem.reserveAmmoCount(player, ((GunItem) heldItem.getItem()).ammunition));
+                textRenderer.drawWithShadow(matrixStack, text, ((float) scaledWidth / 2) + 95, scaledHeight - 30, 0xFFFFFF);
             }
         }
     }

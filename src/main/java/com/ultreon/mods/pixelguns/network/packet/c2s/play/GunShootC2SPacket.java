@@ -1,10 +1,10 @@
 package com.ultreon.mods.pixelguns.network.packet.c2s.play;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
-
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -17,12 +17,12 @@ public class GunShootC2SPacket implements ServerPlayNetworking.PlayChannelHandle
         ItemStack itemStack = player.getMainHandStack();
         if (itemStack.getItem() instanceof GunItem gunItem) {
             if (!player.isSprinting() && GunItem.isLoaded(itemStack)) {
-                gunItem.shoot(player, itemStack);
+                NbtCompound nbt = itemStack.getOrCreateNbt();
 
-                itemStack.getOrCreateNbt().putInt("reloadTick", 0);
-                itemStack.getOrCreateNbt().putBoolean("isReloading", false);
+                gunItem.shoot(player, itemStack);
+                nbt.putInt(GunItem.TAG_RELOAD_TICK, 0);
+                nbt.putBoolean(GunItem.TAG_IS_RELOADING, false);
             }
         }
-
     }
 }

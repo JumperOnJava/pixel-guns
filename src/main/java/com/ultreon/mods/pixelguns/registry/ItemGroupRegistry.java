@@ -1,25 +1,27 @@
 package com.ultreon.mods.pixelguns.registry;
 
-import com.ultreon.mods.pixelguns.util.ResourcePath;
+import com.ultreon.mods.pixelguns.PixelGuns;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 public class ItemGroupRegistry {
-    public static final ItemGroup MISC = FabricItemGroup.builder(ResourcePath.get("misc"))
+
+    public static final ItemGroup MISC = FabricItemGroup.builder(PixelGuns.id("misc"))
         .displayName(Text.translatable("itemGroup.pixel_guns.misc"))
         .icon(() -> new ItemStack(ItemRegistry.ARMORED_VEST))
         .build();
-    public static final ItemGroup WEAPONS = FabricItemGroup.builder(ResourcePath.get("guns"))
+
+    public static final ItemGroup WEAPONS = FabricItemGroup.builder(PixelGuns.id("guns"))
         .displayName(Text.translatable("itemGroup.pixel_guns.guns"))
         .icon(() -> new ItemStack(ItemRegistry.REVOLVER))
         .build();
 
     public static void registerItemGroups() {
         ItemGroupEvents.modifyEntriesEvent(WEAPONS).register(entries -> {
-
             entries.add(ItemRegistry.PISTOL);
             entries.add(ItemRegistry.REVOLVER);
             entries.add(ItemRegistry.COMBAT_SHOTGUN);
@@ -38,7 +40,9 @@ public class ItemGroupRegistry {
             entries.add(ItemRegistry.ENERGY_BATTERY);
 
             entries.add(ItemRegistry.GRENADE);
-            entries.add(ItemRegistry.KATANA);
+            ItemStack katana = new ItemStack(ItemRegistry.KATANA);
+            katana.addEnchantment(Enchantments.SWEEPING, 3);
+            entries.add(katana);
             entries.add(ItemRegistry.CROWBAR);
         });
 
@@ -50,7 +54,9 @@ public class ItemGroupRegistry {
             entries.add(ItemRegistry.LONG_SCOPE);
 
             entries.add(ItemRegistry.WORKSHOP);
-            entries.add(ItemRegistry.BOTTLE);
+            entries.add(ItemRegistry.LIME_BOTTLE);
+            entries.add(ItemRegistry.LEMON_BOTTLE);
+            entries.add(ItemRegistry.ORANGE_BOTTLE);
 
             entries.add(ItemRegistry.GAS_MASK);
             entries.add(ItemRegistry.ARMORED_VEST);

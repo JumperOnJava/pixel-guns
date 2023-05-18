@@ -2,8 +2,7 @@ package com.ultreon.mods.pixelguns.item.gun.variant;
 
 import com.ultreon.mods.pixelguns.client.GeoRendererGenerator;
 import com.ultreon.mods.pixelguns.entity.projectile.RocketEntity;
-import com.ultreon.mods.pixelguns.event.GunFireEvent;
-import com.ultreon.mods.pixelguns.event.forge.Event;
+import com.ultreon.mods.pixelguns.event.GunEvents;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
@@ -33,26 +32,22 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
     public RocketLauncherItem() {
         super(
-            false,
-            50.0f,
-            128,
-            30,
-            1,
-            ItemRegistry.ROCKET,
-            30,
-            0,
-            25.0f,
-            1,
-            LoadingType.INDIVIDUAL,
-            SoundRegistry.ROCKET_LAUNCHER_RELOAD,
-            SoundRegistry.ROCKET_LAUNCHER_FIRE,
-            1,
-            false,
-            new int[] {1, 8, 17},
-            new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 55),
-                new ItemStack(Items.IRON_NUGGET, 10)
-            }
+                false,
+                50.0f,
+                128,
+                30,
+                1,
+                ItemRegistry.ROCKET,
+                30,
+                0,
+                25.0f,
+                1,
+                LoadingType.INDIVIDUAL,
+                SoundRegistry.ROCKET_LAUNCHER_RELOAD,
+                SoundRegistry.ROCKET_LAUNCHER_FIRE,
+                1,
+                false,
+                new int[]{1, 8, 17}
         );
 
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
@@ -60,12 +55,11 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
     @Override
     public void shoot(PlayerEntity player, ItemStack stack) {
-        Event.call(new GunFireEvent.Pre(player, stack));
+        GunEvents.GUN_SHOT_PRE.invokeEvent(event -> event.onGunShotPre(player, stack));
         if (player.world.isClient) {
-            Event.call(new GunFireEvent.Post(player, stack));
+            GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
             return;
         }
-
 
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
@@ -90,12 +84,12 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
 
         this.playFireAudio(world, player);
 
-        Event.call(new GunFireEvent.Post(player, stack));
+        GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
     }
 
     @Override
     protected void doReloadTick(World world, NbtCompound nbtCompound, PlayerEntity player, ItemStack stack) {
-        int reloadTick = nbtCompound.getInt("reloadTick");
+        int reloadTick = nbtCompound.getInt(GunItem.TAG_RELOAD_TICK);
         if (reloadTick == 0 && world instanceof ServerWorld serverWorld) {
             this.triggerAnim(player, GeoItem.getOrAssignId(player.getMainHandStack(), serverWorld), "controller", "reload");
         }
@@ -112,8 +106,8 @@ public class RocketLauncherItem extends GunItem implements GeoItem {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", state -> PlayState.CONTINUE)
-            .triggerableAnim("reload", Animations.RELOAD)
-            .triggerableAnim("fire", Animations.FIRE)
+                .triggerableAnim("reload", Animations.RELOAD)
+                .triggerableAnim("fire", Animations.FIRE)
         );
     }
 

@@ -1,13 +1,9 @@
 package com.ultreon.mods.pixelguns.item.ammo.variant;
 
 import com.ultreon.mods.pixelguns.client.GeoRendererGenerator;
-import com.ultreon.mods.pixelguns.item.KatanaItem;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.RenderProvider;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -15,21 +11,13 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RocketItem extends Item implements GeoItem, WorkshopCraftable {
+public class RocketItem extends Item implements GeoItem {
+
     public RocketItem() {
         super(new FabricItemSettings().maxCount(64));
-    }
-
-    @Override
-    public ItemStack[] getIngredients() {
-        return List.of(
-            new ItemStack(Items.IRON_NUGGET, 1),
-            new ItemStack(Items.GUNPOWDER, 4)
-        ).toArray(new ItemStack[0]);
     }
 
     /*
@@ -46,8 +34,9 @@ public class RocketItem extends Item implements GeoItem, WorkshopCraftable {
 
             @Override
             public BuiltinModelItemRenderer getCustomRenderer() {
-                if (this.renderer == null)
+                if (this.renderer == null) {
                     this.renderer = GeoRendererGenerator.item(RocketItem.this);
+                }
 
                 return this.renderer;
             }

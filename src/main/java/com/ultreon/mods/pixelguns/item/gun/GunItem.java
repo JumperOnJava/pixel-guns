@@ -1,18 +1,20 @@
 package com.ultreon.mods.pixelguns.item.gun;
 
-import com.ultreon.mods.pixelguns.block.BottleBlock;
-import com.ultreon.mods.pixelguns.event.GunFireEvent;
-import com.ultreon.mods.pixelguns.event.forge.Event;
+import com.ultreon.mods.pixelguns.event.GunEvents;
+import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
-import com.ultreon.mods.pixelguns.registry.KeybindRegistry;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
-import io.netty.buffer.Unpooled;
+import com.ultreon.mods.pixelguns.registry.TagRegistry;
 import com.ultreon.mods.pixelguns.util.InventoryUtil;
-
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ButtonBlock;
+import net.minecraft.block.TargetBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -29,6 +31,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -37,13 +40,21 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 
-public abstract class GunItem extends Item implements WorkshopCraftable {
+import java.util.List;
+import java.util.UUID;
 
+public abstract class GunItem extends Item {
+
+    public static final String TAG_RELOAD_TICK = "reloadTick";
+    public static final String TAG_CLIP = "Clip";
+    public static final String TAG_CURRENT_CYCLE = "currentCycle";
+    public static final String TAG_IS_SCOPED = "isScoped";
+    public static final String TAG_IS_RELOADING = "isReloading";
+    public static final String TAG_UUID = "uuid";
+    public static final String TAG_IS_COOLING_DOWN = "isCoolingDown";
+    
     public final boolean isAutomatic;
     protected final float damage;
     protected final int range;
@@ -60,9 +71,8 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
     protected final SoundEvent fireAudio;
     private final int reloadCycles;
     public final boolean isScoped;
-    private final ItemStack[] craftingRequirements;
 
-    public GunItem(boolean isAutomatic, float damage, int range, int fireCooldown, int magazineSize, Item ammunition, int reloadCooldown, float bulletSpread, float recoil, int pelletCount, LoadingType loadingType, SoundEvent[] reloadSounds, SoundEvent fireAudio, int reloadCycles, boolean isScoped, int[] reloadStages, ItemStack[] craftingRequirements) {
+    public GunItem(boolean isAutomatic, float damage, int range, int fireCooldown, int magazineSize, Item ammunition, int reloadCooldown, float bulletSpread, float recoil, int pelletCount, LoadingType loadingType, SoundEvent[] reloadSounds, SoundEvent fireAudio, int reloadCycles, boolean isScoped, int[] reloadStages) {
         super(new FabricItemSettings().maxCount(1));
         this.isAutomatic = isAutomatic;
         this.damage = damage;
@@ -80,7 +90,6 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         this.reloadCycles = reloadCycles;
         this.isScoped = isScoped;
         this.reloadSoundStages = reloadStages;
-        this.craftingRequirements = craftingRequirements;
     }
 
     public static boolean isLoaded(ItemStack stack) {
@@ -89,30 +98,32 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     public static int remainingAmmo(ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        return nbtCompound.getInt("Clip");
+        return nbtCompound.getInt(TAG_CLIP);
     }
 
     public static int reserveAmmoCount(PlayerEntity player, Item item) {
-        return InventoryUtil.itemCountInInventory(player, item);
+        if (player.isCreative()) {
+            return item.getMaxCount();
+        }
+        else {
+            return InventoryUtil.itemCountInInventory(player, item);
+        }
     }
 
     public void setDefaultNBT(NbtCompound nbtCompound) {
-        nbtCompound.putInt("reloadTick", 0);
-        nbtCompound.putInt("currentCycle", 1);
-        nbtCompound.putInt("Clip", 0);
-        nbtCompound.putBoolean("isScoped", this.isScoped);
-        nbtCompound.putBoolean("isReloading", false);
+        nbtCompound.putInt(TAG_RELOAD_TICK, 0);
+        nbtCompound.putInt(TAG_CURRENT_CYCLE, 1);
+        nbtCompound.putInt(TAG_CLIP, 0);
+        nbtCompound.putBoolean(TAG_IS_SCOPED, this.isScoped);
+        nbtCompound.putBoolean(TAG_IS_RELOADING, false);
+        nbtCompound.putBoolean(TAG_IS_COOLING_DOWN, false);
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        String ammoType =       Formatting.GRAY + "Ammo Type: " + Formatting.WHITE + this.ammunition.getName().getString();
-        String gunDamage =      Formatting.GRAY + "Damage: "    + Formatting.WHITE + this.damage;
-        String gunMagazine =    Formatting.GRAY + "Ammo: "      + Formatting.WHITE + GunItem.remainingAmmo(stack) + "/" + this.magazineSize;
-
-        tooltip.add(Text.literal(ammoType));
-        tooltip.add(Text.literal(gunDamage));
-        tooltip.add(Text.literal(gunMagazine));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.ammo_type").formatted(Formatting.GRAY).append(" ").append(ammunition.getName().copy().formatted(Formatting.WHITE)));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.damage").formatted(Formatting.GRAY).append(Text.literal(" " + damage).formatted(Formatting.WHITE)));
+        tooltip.add(Text.translatable("item.pixel_guns.gun.ammo").formatted(Formatting.GRAY).append(Text.literal(" " + GunItem.remainingAmmo(stack) + "/" + magazineSize).formatted(Formatting.WHITE)));
     }
 
     @Override
@@ -120,118 +131,163 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
         ItemCooldownManager cooldownManager = ((PlayerEntity) entity).getItemCooldownManager();
 
-        if (!(nbtCompound.contains("reloadTick") && nbtCompound.contains("Clip") && nbtCompound.contains("isScoped") && nbtCompound.contains("isReloading"))) {
+        if (!nbtCompound.contains(TAG_UUID)) {
+            nbtCompound.putUuid(TAG_UUID, UUID.randomUUID());
+        }
+
+        if (!(nbtCompound.contains(TAG_RELOAD_TICK) && nbtCompound.contains(TAG_CLIP) && nbtCompound.contains(TAG_IS_SCOPED) && nbtCompound.contains(TAG_IS_RELOADING))) {
             this.setDefaultNBT(nbtCompound);
         }
 
-        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeybindRegistry.reload.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean("isReloading")) {
+        if (world.isClient() && ((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) == stack && KeyBindRegistry.RELOAD_KEY.isPressed() && GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) > 0 && !nbtCompound.getBoolean(TAG_IS_RELOADING)) {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeBoolean(true);
-            ClientPlayNetworking.send(ResourcePath.get("reload"), buf);
+            ClientPlayNetworking.send(PacketRegistry.GUN_RELOAD, buf);
         }
 
-        if (nbtCompound.getBoolean("isReloading") && (((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) != stack || GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) <= 0 && this.reloadCycles <= 1 || nbtCompound.getInt("reloadTick") >= this.reloadCooldown || GunItem.remainingAmmo(stack) >= this.magazineSize && this.reloadCycles <= 1)) {
-            nbtCompound.putBoolean("isReloading", false);
+        if (nbtCompound.getBoolean(TAG_IS_RELOADING) && (((PlayerEntity) entity).getStackInHand(Hand.MAIN_HAND) != stack || GunItem.reserveAmmoCount((PlayerEntity) entity, this.ammunition) <= 0 && this.reloadCycles <= 1 || nbtCompound.getInt(TAG_RELOAD_TICK) >= this.reloadCooldown || GunItem.remainingAmmo(stack) >= this.magazineSize && this.reloadCycles <= 1)) {
+            nbtCompound.putBoolean(TAG_IS_RELOADING, false);
         }
 
-        if (nbtCompound.getBoolean("isReloading")) {
+        if (nbtCompound.getBoolean(TAG_IS_RELOADING)) {
             this.doReloadTick(world, nbtCompound, (PlayerEntity) entity, stack);
-        } else {
-            if (nbtCompound.getInt("reloadTick") > this.reloadSoundStages[2] && nbtCompound.getInt("reloadTick") <= this.reloadCooldown) {
+        }
+        else {
+            if (nbtCompound.getInt(TAG_RELOAD_TICK) > this.reloadSoundStages[2] && nbtCompound.getInt(TAG_RELOAD_TICK) <= this.reloadCooldown) {
                 this.finishReload((PlayerEntity) entity, stack);
             }
-            nbtCompound.putInt("reloadTick", 0);
+            nbtCompound.putInt(TAG_RELOAD_TICK, 0);
         }
 
-        if (cooldownManager.isCoolingDown(stack.getItem())) {
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeItemStack(stack);
-            buf.writeFloat(cooldownManager.getCooldownProgress(stack.getItem(), 0));
-            ClientPlayNetworking.send(PacketRegistry.GUN_COOLDOWN_2_S, buf);
+        if (!world.isClient) {
+            if (cooldownManager.isCoolingDown(stack.getItem()) && nbtCompound.getBoolean(TAG_IS_COOLING_DOWN)) {
+                float cooldown = cooldownManager.getCooldownProgress(stack.getItem(), 0);
+
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeUuid(nbtCompound.getUuid(TAG_UUID));
+                buf.writeFloat(cooldown);
+
+                for (ServerPlayerEntity trackingPlayer : PlayerLookup.tracking(entity)) {
+                    if (!trackingPlayer.getUuid().equals(entity.getUuid())) {
+                        ServerPlayNetworking.send(trackingPlayer, PacketRegistry.GUN_COOLDOWN, buf);
+                    }
+                }
+
+                ServerPlayNetworking.send((ServerPlayerEntity) entity, PacketRegistry.GUN_COOLDOWN, buf);
+
+                if (cooldown == 0) {
+                    nbtCompound.putBoolean(TAG_IS_COOLING_DOWN, false);
+                }
+            }
         }
     }
 
     protected void doReloadTick(World world, NbtCompound nbtCompound, PlayerEntity player, ItemStack stack) {
-        int reloadTick = nbtCompound.getInt("reloadTick");
-        nbtCompound.putInt("reloadTick", nbtCompound.getInt("reloadTick") + 1);
+        int reloadTick = nbtCompound.getInt(TAG_RELOAD_TICK);
+        nbtCompound.putInt(TAG_RELOAD_TICK, nbtCompound.getInt(TAG_RELOAD_TICK) + 1);
         if (!world.isClient()) {
             if (reloadTick == this.reloadSoundStages[0]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[0], SoundCategory.MASTER, 1.0f, 1.0f);
-            } else if (reloadTick == this.reloadSoundStages[1]) {
+            }
+            else if (reloadTick == this.reloadSoundStages[1]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[1], SoundCategory.MASTER, 1.0f, 1.0f);
-            } else if (reloadTick == this.reloadSoundStages[2]) {
+            }
+            else if (reloadTick == this.reloadSoundStages[2]) {
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), this.reloadSounds[2], SoundCategory.MASTER, 1.0f, 1.0f);
             }
         }
         switch (this.loadingType) {
             case CLIP -> {
-                if (reloadTick < this.reloadCooldown) break;
-                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) break;
+                if (reloadTick < this.reloadCooldown) {
+                    break;
+                }
+                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) {
+                    break;
+                }
 
-                nbtCompound.putInt("currentCycle", 1);
+                nbtCompound.putInt(TAG_CURRENT_CYCLE, 1);
                 this.finishReload(player, stack);
-                nbtCompound.putInt("reloadTick", 0);
+                nbtCompound.putInt(TAG_RELOAD_TICK, 0);
             }
             case INDIVIDUAL -> {
-                if (reloadTick < this.reloadSoundStages[2]) break;
-                if (nbtCompound.getInt("currentCycle") >= this.reloadCycles) break;
-                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) break;
+                if (reloadTick < this.reloadSoundStages[2]) {
+                    break;
+                }
+                if (nbtCompound.getInt(TAG_CURRENT_CYCLE) >= this.reloadCycles) {
+                    break;
+                }
+                if (GunItem.reserveAmmoCount(player, this.ammunition) <= 0) {
+                    break;
+                }
 
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + 1);
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + 1);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, 1);
                 if (GunItem.remainingAmmo(stack) < this.magazineSize && GunItem.reserveAmmoCount(player, this.ammunition) > 0) {
-                    nbtCompound.putInt("reloadTick", this.reloadSoundStages[1]);
+                    nbtCompound.putInt(TAG_RELOAD_TICK, this.reloadSoundStages[1]);
                 }
-                nbtCompound.putInt("currentCycle", nbtCompound.getInt("Clip"));
+                nbtCompound.putInt(TAG_CURRENT_CYCLE, nbtCompound.getInt(TAG_CLIP));
             }
         }
     }
 
     protected void handleHit(HitResult result, ServerWorld world, ServerPlayerEntity damageSource) {
+        GunEvents.GUN_HIT.invokeEvent(event -> event.onGunHit(result, world, damageSource));
+
         if (result instanceof EntityHitResult entityHitResult) {
             entityHitResult.getEntity().damage(DamageSource.player(damageSource), this.damage);
         }
         else if (result instanceof BlockHitResult blockHitResult) {
             BlockPos pos = blockHitResult.getBlockPos();
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
 
             if (blockHitResult.getType() == HitResult.Type.MISS) {
                 return;
             }
 
-            if (world.getBlockState(pos).getBlock() instanceof BottleBlock bottleBlock) {
+            if (state.isIn(TagRegistry.BULLET_DESTROYS)) {
                 world.breakBlock(pos, false);
             }
 
-            ParticleEffect particleEffect = new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(blockHitResult.getBlockPos()));
+            if (block instanceof ButtonBlock buttonBlock) {
+                buttonBlock.onUse(state, world, pos, damageSource, Hand.MAIN_HAND, blockHitResult);
+            }
+
+            if (block instanceof TargetBlock targetBlock) {
+                TargetBlock.trigger(world, state, blockHitResult, null);
+                damageSource.incrementStat(Stats.TARGET_HIT);
+            }
+
+            ParticleEffect particleEffect = new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(pos));
             world.spawnParticles(particleEffect, blockHitResult.getPos().x, blockHitResult.getPos().y, blockHitResult.getPos().z, 1, 0, 0, 0, 1);
         }
     }
 
-
-
     public void shoot(PlayerEntity player, ItemStack stack) {
-
-        Event.call(new GunFireEvent.Pre(player, stack));
+        GunEvents.GUN_SHOT_PRE.invokeEvent(event -> event.onGunShotPre(player, stack));
 
         if (player.world.isClient) {
-            Event.call(new GunFireEvent.Post(player, stack));
+            GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
             return;
         }
 
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         ServerWorld world = serverPlayer.getWorld();
-        player.getItemCooldownManager().set(this, this.fireCooldown);
-        for (int i = 0; i < this.pelletCount; ++i) {
+
+        playFireAudio(world, player);
+        serverPlayer.getItemCooldownManager().set(this, fireCooldown);
+        stack.getOrCreateNbt().putBoolean(TAG_IS_COOLING_DOWN, true);
+
+        for (int i = 0; i < pelletCount; ++i) {
             // TODO bullet spread
-            this.handleHit(GunHitscanHelper.getCollision(player, this.range), world, serverPlayer);
+            handleHit(GunHitscanHelper.getCollision(player, range), world, serverPlayer);
         }
 
         if (!player.getAbilities().creativeMode) {
-            this.useAmmo(stack);
+            useAmmo(stack);
         }
-        this.playFireAudio(world, player);
 
-        Event.call(new GunFireEvent.Post(player, stack));
+        GunEvents.GUN_SHOT_POST.invokeEvent(event -> event.onGunShotPost(player, stack));
     }
 
     public void playFireAudio(World world, PlayerEntity user) {
@@ -244,34 +300,32 @@ public abstract class GunItem extends Item implements WorkshopCraftable {
 
     protected void useAmmo(ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") - 1);
+        nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) - 1);
     }
 
     public void finishReload(PlayerEntity player, ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        if (nbtCompound.getInt("Clip") <= 0) {
+        if (nbtCompound.getInt(TAG_CLIP) <= 0) {
             if (GunItem.reserveAmmoCount(player, this.ammunition) > this.magazineSize) {
-                nbtCompound.putInt("Clip", this.magazineSize);
+                nbtCompound.putInt(TAG_CLIP, this.magazineSize);
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, this.magazineSize);
-            } else {
-                nbtCompound.putInt("Clip", GunItem.reserveAmmoCount(player, this.ammunition));
-                InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
-        } else {
-            int ammoToLoad = this.magazineSize - nbtCompound.getInt("Clip");
-            if (GunItem.reserveAmmoCount(player, this.ammunition) >= ammoToLoad) {
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + ammoToLoad);
-                InventoryUtil.removeItemFromInventory(player, this.ammunition, ammoToLoad);
-            } else {
-                nbtCompound.putInt("Clip", nbtCompound.getInt("Clip") + GunItem.reserveAmmoCount(player, this.ammunition));
+            else {
+                nbtCompound.putInt(TAG_CLIP, GunItem.reserveAmmoCount(player, this.ammunition));
                 InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
             }
         }
-    }
-
-    @Override
-    public ItemStack[] getIngredients() {
-        return craftingRequirements;
+        else {
+            int ammoToLoad = this.magazineSize - nbtCompound.getInt(TAG_CLIP);
+            if (GunItem.reserveAmmoCount(player, this.ammunition) >= ammoToLoad) {
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + ammoToLoad);
+                InventoryUtil.removeItemFromInventory(player, this.ammunition, ammoToLoad);
+            }
+            else {
+                nbtCompound.putInt(TAG_CLIP, nbtCompound.getInt(TAG_CLIP) + GunItem.reserveAmmoCount(player, this.ammunition));
+                InventoryUtil.removeItemFromInventory(player, this.ammunition, GunItem.reserveAmmoCount(player, this.ammunition));
+            }
+        }
     }
 
     @Override

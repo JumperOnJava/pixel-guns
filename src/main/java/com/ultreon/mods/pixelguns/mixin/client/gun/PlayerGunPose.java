@@ -2,16 +2,7 @@ package com.ultreon.mods.pixelguns.mixin.client.gun;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 import com.ultreon.mods.pixelguns.item.gun.variant.InfinityGunItem;
-import org.joml.AxisAngle4f;
-import org.joml.Quaternionf;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -21,22 +12,32 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerGunPose {
+
     @Inject(method = "getArmPose", at = @At("TAIL"), cancellable = true)
     private static void gunPose(AbstractClientPlayerEntity player, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> ci) {
         if (player.getStackInHand(hand).getItem() instanceof GunItem) {
-            if (player.getStackInHand(hand).getOrCreateNbt().getInt("reloadTick") > 0) {
+            if (player.getStackInHand(hand).getOrCreateNbt().getInt(GunItem.TAG_RELOAD_TICK) > 0) {
                 ci.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_CHARGE);
             }
-            else if (GunItem.isLoaded(player.getStackInHand(hand))) {
+            else if (GunItem.isLoaded(player.getStackInHand(hand)) && !player.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
                 ci.setReturnValue(BipedEntityModel.ArmPose.BOW_AND_ARROW);
             }
             return;
         }
         ci.setReturnValue(BipedEntityModel.ArmPose.ITEM);
     }
+
     @Inject(method = "render(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("TAIL"))
     private void render(AbstractClientPlayerEntity player, float f, float g, MatrixStack poseStack, VertexConsumerProvider multiBufferSource, int i, CallbackInfo ci) {
         ItemStack itemInHand = player.getStackInHand(Hand.MAIN_HAND);
@@ -55,8 +56,6 @@ public class PlayerGunPose {
                     BeaconBlockEntityRenderer.renderBeam(poseStack, multiBufferSource, f, tickCount, distance, m == list.size() - 1 ? 1024 : beaconBeamSection.getHeight(), beaconBeamSection.getColor());
                     distance += beaconBeamSection.getHeight();
                 }
-                // new Quaternionf(new AxisAngle4f(player.getPitch(), player.getHeadYaw(), 0f));
-                // poseStack.multiply(Quaternionf.fromEulerXyz(player.getPitch(), player.getHeadYaw(), 0));
                 poseStack.pop();
             }
         }

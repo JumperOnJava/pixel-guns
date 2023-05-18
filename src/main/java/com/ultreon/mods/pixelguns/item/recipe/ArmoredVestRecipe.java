@@ -40,20 +40,7 @@ public class ArmoredVestRecipe extends SpecialCraftingRecipe {
         }
 
         return ironCount == 7 && woolCount == 1;
-
-//        ItemStack centerSlot = inventory.getStack(4);
-//        return hasIronInSlots(inventory) && centerSlot.isOf(Blocks.YELLOW_WOOL.asItem()) && !centerSlot.isEmpty();
     }
-
-//    private boolean hasIronInSlots(CraftingInventory inventory) {
-//        for (int i : new int[] { 0, 2, 3, 5, 6, 7, 8 }) {
-//            ItemStack stack = inventory.getStack(i);
-//            if (!stack.isOf(Items.IRON_INGOT) && !inventory.isEmpty()) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     @Override
     public ItemStack craft(CraftingInventory inventory) {

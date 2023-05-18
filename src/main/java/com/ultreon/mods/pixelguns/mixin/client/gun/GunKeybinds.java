@@ -2,7 +2,8 @@ package com.ultreon.mods.pixelguns.mixin.client.gun;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
 
-import com.ultreon.mods.pixelguns.registry.KeybindRegistry;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
+import com.ultreon.mods.pixelguns.registry.KeyBindRegistry;
 import com.ultreon.mods.pixelguns.registry.PacketRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -11,6 +12,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
+import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,7 +40,6 @@ public abstract class GunKeybinds {
                     gunItem.shoot(this.player, this.player.getMainHandStack());
                     ClientPlayNetworking.send(PacketRegistry.GUN_SHOOT, PacketByteBufs.create());
                 }
-
             }
         }
     }
@@ -47,12 +48,11 @@ public abstract class GunKeybinds {
     public void handleGunReload(CallbackInfo info) {
         assert this.player != null;
         if (this.player.getMainHandStack().getItem() instanceof GunItem) {
-            if (KeybindRegistry.reload.isPressed()) {
+            if (KeyBindRegistry.RELOAD_KEY.isPressed()) {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeBoolean(true);
                 ClientPlayNetworking.send(PacketRegistry.GUN_RELOAD, buf);
             }
-
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class GunKeybinds {
             return;
         }
         ItemStack itemStack = this.player.getMainHandStack();
-        if (itemStack.getItem() instanceof GunItem) {
+        if (itemStack.getItem() instanceof GunItem && !player.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
             ci.cancel();
         }
     }

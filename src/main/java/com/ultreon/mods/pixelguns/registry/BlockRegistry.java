@@ -1,43 +1,25 @@
 package com.ultreon.mods.pixelguns.registry;
 
+import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.block.BottleBlock;
 import com.ultreon.mods.pixelguns.block.WorkshopBlock;
-import com.ultreon.mods.pixelguns.util.ResourcePath;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class BlockRegistry {
-    public static final Block WORKSHOP;
-    public static final Block BOTTLE;
 
-    static {
-        WORKSHOP = BlockRegistry.register("workshop", new WorkshopBlock());
-        BOTTLE = BlockRegistry.register("bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
-    }
+    public static final Block WORKSHOP = BlockRegistry.register("workshop", new WorkshopBlock());
+    public static final Block LIME_BOTTLE = BlockRegistry.register("lime_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
+    public static final Block LEMON_BOTTLE = BlockRegistry.register("lemon_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
+    public static final Block ORANGE_BOTTLE = BlockRegistry.register("orange_bottle", new BottleBlock(AbstractBlock.Settings.copy(Blocks.GLASS)));
+
+    public static void init() {}
 
     private static Block register(String name, Block block) {
-        return Registry.register(Registries.BLOCK, ResourcePath.get(name), block);
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public static class RENDERER {
-
-        public static void registerBlockRenderers() {
-            RENDERER.registerBlockRenderer(BlockRegistry.WORKSHOP, RenderLayer.getCutout());
-            RENDERER.registerBlockRenderer(BlockRegistry.BOTTLE, RenderLayer.getTranslucent());
-        }
-
-        private static void registerBlockRenderer(Block block, RenderLayer renderLayer) {
-            BlockRenderLayerMap.INSTANCE.putBlock(block, renderLayer);
-        }
+        return Registry.register(Registries.BLOCK, PixelGuns.id(name), block);
     }
 }

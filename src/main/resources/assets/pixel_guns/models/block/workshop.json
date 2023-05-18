@@ -708,45 +708,42 @@
 			"from": [8, 15, 4],
 			"to": [8, 19, 11],
 			"faces": {
-				"north": {"uv": [0, 0, 0, 1], "texture": "#0", "cullface": "north"},
-				"east": {"uv": [8, 8.25, 9.75, 9.25], "texture": "#0", "cullface": "east"},
-				"south": {"uv": [0, 0, 0, 1], "texture": "#0", "cullface": "south"},
-				"west": {"uv": [0, 8.5, 1.75, 9.5], "texture": "#0", "cullface": "west"},
-				"up": {"uv": [0, 1.75, 0, 0], "texture": "#0"},
-				"down": {"uv": [0, 0, 0, 1.75], "texture": "#0"}
+				"east": {"uv": [8, 8.25, 9.75, 9.25], "texture": "#0"},
+				"west": {"uv": [0, 8.5, 1.75, 9.5], "texture": "#0"}
 			}
 		}
 	],
+	"gui_light": "side",
 	"display": {
-		"thirdperson_righthand": {
-			"rotation": [75, 315, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [75, 315, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 315, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, 315, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.4, 0.4, 0.4]
+		"gui": {
+			"rotation": [ 30, 45, 0 ],
+			"translation": [ 0, 0, 0],
+			"scale":[ 0.625, 0.625, 0.625 ]
 		},
 		"ground": {
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"gui": {
-			"rotation": [30, 45, 0],
-			"scale": [0.625, 0.625, 0.625]
+			"rotation": [ 0, 180, 0 ],
+			"translation": [ 0, 3, 0],
+			"scale":[ 0.25, 0.25, 0.25 ]
 		},
 		"fixed": {
-			"scale": [0.5, 0.5, 0.5]
+			"rotation": [ 0, 180, 0 ],
+			"translation": [ 0, 0, 0],
+			"scale":[ 0.5, 0.5, 0.5 ]
+		},
+		"thirdperson_righthand": {
+			"rotation": [ 75, 225, 0 ],
+			"translation": [ 0, 2.5, 0],
+			"scale": [ 0.375, 0.375, 0.375 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 0, 225, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.40, 0.40, 0.40 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 0, 45, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.40, 0.40, 0.40 ]
 		}
 	},
 	"groups": [

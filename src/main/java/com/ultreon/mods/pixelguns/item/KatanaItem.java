@@ -18,10 +18,8 @@ import java.util.function.Supplier;
 public class KatanaItem extends SwordItem implements GeoItem {
 
     public KatanaItem() {
-        super(ToolMaterials.DIAMOND, 10, -2.4f, new FabricItemSettings());
+        super(ToolMaterials.DIAMOND, 12, -2.4f, new FabricItemSettings());
     }
-
-
 
     /*
      * Animation Side
@@ -52,7 +50,6 @@ public class KatanaItem extends SwordItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
     }
 
     @Override

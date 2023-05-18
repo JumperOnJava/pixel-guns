@@ -1,6 +1,7 @@
 package com.ultreon.mods.pixelguns.mixin.client.gun;
 
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.item.ItemStack;
@@ -15,18 +16,19 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public class ScopedSensitivity {
 
     @ModifyArgs(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
-    private void injected(Args args) {
+    private void updateMouse(Args args) {
         double a0 = args.get(0);
         double a1 = args.get(1);
 
         MinecraftClient client = MinecraftClient.getInstance();
         ItemStack gun = client.player.getStackInHand(Hand.MAIN_HAND);
-        if (gun.getItem() instanceof GunItem && client.mouse.wasRightButtonClicked() && GunItem.isLoaded(gun)) {
+        if (gun.getItem() instanceof GunItem && client.mouse.wasRightButtonClicked() && GunItem.isLoaded(gun) && !client.player.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
             NbtCompound nbtCompound = gun.getOrCreateNbt();
-            if (nbtCompound.getBoolean("isScoped")) {
+            if (nbtCompound.getBoolean(GunItem.TAG_IS_SCOPED)) {
                 args.set(0, a0 * 0.2);
                 args.set(1, a1 * 0.2);
-            } else {
+            }
+            else {
                 args.set(0, a0 * 0.8);
                 args.set(1, a1 * 0.8);
             }

@@ -12,16 +12,15 @@ import java.util.Optional;
 public class GunHitscanHelper {
 
     public static HitResult getCollision(LivingEntity shooter, double maxDistance) {
-
         EntityHitResult entityHitResult = GunHitscanHelper.getEntityCollision(shooter, maxDistance);
-        if (entityHitResult != null) return entityHitResult;
-
+        if (entityHitResult != null) {
+            return entityHitResult;
+        }
 
         return GunHitscanHelper.getBlockCollision(shooter, maxDistance > 32 ? 32 : maxDistance);
     }
 
     public static BlockHitResult getBlockCollision(LivingEntity shooter, double maxDistance) {
-
         Vec3d origin = shooter.getEyePos();
         Vec3d direction = shooter.getRotationVector().normalize();
         Vec3d destination = origin.add(direction.multiply(maxDistance));
@@ -29,14 +28,13 @@ public class GunHitscanHelper {
         return shooter.getWorld().raycast(new RaycastContext(origin, destination, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, shooter));
     }
 
-    private record CollisionInfo(LivingEntity entity, Vec3d hitLocation, double distance2) { }
+    private record CollisionInfo(LivingEntity entity, Vec3d hitLocation, double distance2) {}
 
     public static EntityHitResult getEntityCollision(LivingEntity shooter, double maxDistance) {
         Vec3d origin = shooter.getEyePos();
         Vec3d direction = shooter.getRotationVector().normalize();
         Vec3d destination = origin.add(direction.multiply(maxDistance));
-
-       CollisionInfo closestCollision = null;
+        CollisionInfo closestCollision = null;
 
         // Get all LivingEntities in the box bound by the origin and the destination
         for (final LivingEntity entity : shooter.getWorld().getEntitiesByClass(LivingEntity.class, shooter.getBoundingBox().stretch(direction.multiply(maxDistance)), (e) -> true)) {

@@ -1,20 +1,16 @@
 package com.ultreon.mods.pixelguns.item.gun.variant;
 
-import com.ultreon.mods.pixelguns.PixelGuns;
 import com.ultreon.mods.pixelguns.client.GeoRendererGenerator;
 import com.ultreon.mods.pixelguns.entity.damagesource.EnergyOrbDamageSource;
 import com.ultreon.mods.pixelguns.item.gun.GunHitscanHelper;
-import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.item.gun.GunItem;
-
+import com.ultreon.mods.pixelguns.registry.ItemRegistry;
 import com.ultreon.mods.pixelguns.registry.SoundRegistry;
-import com.ultreon.mods.pixelguns.util.WorkshopCraftable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,7 +23,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.explosion.ExplosionBehavior;
-
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.RenderProvider;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -39,29 +34,26 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftable {
+public class InfinityGunItem extends GunItem implements GeoItem {
 
     public InfinityGunItem() {
         super(
-            false,
-            80f,
-            128,
-            30,
-            5,
-            ItemRegistry.ENERGY_BATTERY,
-            40,
-            0,
-            25.0f,
-            1,
-            LoadingType.CLIP,
-            SoundRegistry.INFINITY_GUN_RELOAD,
-            SoundRegistry.INFINITY_GUN_FIRE,
-            1,
-            false,
-            new int[] {5, -1, -1},
-            new ItemStack[] {
-                new ItemStack(Items.IRON_INGOT, 48)
-            }
+                false,
+                80f,
+                128,
+                30,
+                5,
+                ItemRegistry.ENERGY_BATTERY,
+                40,
+                0,
+                25.0f,
+                1,
+                LoadingType.CLIP,
+                SoundRegistry.INFINITY_GUN_RELOAD,
+                SoundRegistry.INFINITY_GUN_FIRE,
+                1,
+                false,
+                new int[]{5, -1, -1}
         );
     }
 
@@ -109,7 +101,6 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
         }
 
         // Explode world
-        PixelGuns.LOGGER.info("EXPLODING WORLD");
         world.createExplosion(null, new EnergyOrbDamageSource(), new ExplosionBehavior() {
             @Override
             public Optional<Float> getBlastResistance(Explosion explosion, BlockView world, BlockPos pos, BlockState blockState, FluidState fluidState) {
@@ -122,14 +113,6 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
         public static final String INFINITY_GUN = "PixelGunsInfinityGun";
         public static final String SHOOT_TICKS = "shootTicks";
         public static final String IS_SHOOTING = "isShooting";
-    }
-
-    @Override
-    public ItemStack[] getIngredients() {
-        return new ItemStack[] {
-            new ItemStack(Items.IRON_INGOT, 64),
-            new ItemStack(Items.NETHER_STAR, 1)
-        };
     }
 
     /*
@@ -146,8 +129,9 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
 
             @Override
             public BuiltinModelItemRenderer getCustomRenderer() {
-                if (this.renderer == null)
+                if (this.renderer == null) {
                     this.renderer = GeoRendererGenerator.gun(InfinityGunItem.this);
+                }
 
                 return this.renderer;
             }
@@ -161,7 +145,6 @@ public class InfinityGunItem extends GunItem implements GeoItem, WorkshopCraftab
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
     }
 
     @Override
