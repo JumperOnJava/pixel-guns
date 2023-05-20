@@ -34,6 +34,8 @@ public class ModelPredicateRegistry {
     private static void registerGunPredicate(Item gun) {
         ModelPredicateProviderRegistry.register(gun, PixelGuns.id("cooldown_tick"), (stack, world, entity, seed) -> {
             if (entity != null) {
+                if(entity.getStackInHand(Hand.MAIN_HAND) != stack)
+                    return 0;
                 NbtCompound nbt = stack.getOrCreateNbt();
                 if (nbt.contains(GunItem.TAG_UUID)) {
                     UUID uuid = nbt.getUuid(GunItem.TAG_UUID);
@@ -62,6 +64,7 @@ public class ModelPredicateRegistry {
             return 1.0f;
         });
         ModelPredicateProviderRegistry.register(gun, AIMING, (stack, world, entity, seed) -> {
+            if(entity.getStackInHand(Hand.MAIN_HAND) == stack)
             if (entity != null && MinecraftClient.getInstance().options.useKey.isPressed() && GunItem.isLoaded(stack) && !entity.getStackInHand(Hand.OFF_HAND).isOf(ItemRegistry.POLICE_SHIELD)) {
                 return 1.0f;
             }
